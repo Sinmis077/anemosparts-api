@@ -1,13 +1,14 @@
 package dev.ioannis.anemosparts;
 
-import dev.ioannis.anemosparts.business.PartService;
 import dev.ioannis.anemosparts.business.impl.PartServiceImpl;
 import dev.ioannis.anemosparts.persistance.PartRepo;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+
+import java.util.Set;
+
+import static org.mockito.Mockito.when;
 
 public class ProductServiceTests {
     @Mock
@@ -17,7 +18,11 @@ public class ProductServiceTests {
     private PartServiceImpl partService;
 
     @Test
-    void testFindAll_EmptyList() {
-        assert partService.findAll().isEmpty();
+    void testFindAll_emptySet() {
+        when(partRepo.findAll()).thenReturn(Set.of());
+
+        var result = partService.findAll();
+
+        assert result != null && result.isEmpty();
     }
 }
