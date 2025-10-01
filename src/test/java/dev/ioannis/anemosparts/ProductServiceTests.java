@@ -16,11 +16,6 @@ public class ProductServiceTests {
     @InjectMocks
     private PartServiceImpl partService;
 
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
-
     @Test
     void testFindAll_EmptyList() {
         assert partService.findAll().isEmpty();
