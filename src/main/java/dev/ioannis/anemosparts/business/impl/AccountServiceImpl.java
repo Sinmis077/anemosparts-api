@@ -21,7 +21,7 @@ public class AccountServiceImpl implements AccountService {
     public Set<Account> findAll() {
         Set<Account> accounts = new HashSet<>();
         for(AccountEntity accountEntity : accountRepo.findAll()) {
-            accounts.add(AccountMapper.convertToAccount(accountEntity));
+            accounts.add(AccountMapper.INSTANCE.toAccount(accountEntity));
         }
         return accounts;
     }
@@ -33,26 +33,26 @@ public class AccountServiceImpl implements AccountService {
         if(accountEntity == null) {
             return null;
         }
-        return AccountMapper.convertToAccount(accountEntity);
+        return AccountMapper.INSTANCE.toAccount(accountEntity);
     }
 
     @Override
     public Boolean login(Account account) {
         AccountEntity accountEntity = accountRepo.findById(account.getEmail()).orElse(null);
 
-        return accountEntity != null && !account.equals(AccountMapper.convertToAccount(accountEntity));
+        return accountEntity != null && !account.equals(AccountMapper.INSTANCE.toAccount(accountEntity));
     }
 
     @Override
     public Account create(Account account) {
-        AccountEntity accountEntity = accountRepo.save(AccountMapper.convertToAccountEntity(account));
-        return AccountMapper.convertToAccount(accountEntity);
+        AccountEntity accountEntity = accountRepo.save(AccountMapper.INSTANCE.toAccountEntity(account));
+        return AccountMapper.INSTANCE.toAccount(accountEntity);
     }
 
     @Override
     public Boolean delete(Account account) {
         try {
-            accountRepo.delete(AccountMapper.convertToAccountEntity(account));
+            accountRepo.delete(AccountMapper.INSTANCE.toAccountEntity(account));
             return true;
         } catch(Exception ex) {
             return false;

@@ -1,9 +1,9 @@
 package dev.ioannis.anemosparts.persistance;
 
+import dev.ioannis.anemosparts.domain.entity.PartEntity;
 import org.springframework.data.repository.CrudRepository;
-import dev.ioannis.anemosparts.domain.entity.ProductEntity;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ProductRepo extends CrudRepository<ProductEntity, Long> {
+public interface PartRepo extends CrudRepository<PartEntity, Long> {
 }

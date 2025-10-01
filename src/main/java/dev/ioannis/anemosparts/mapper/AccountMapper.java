@@ -2,13 +2,13 @@ package dev.ioannis.anemosparts.mapper;
 
 import dev.ioannis.anemosparts.domain.Account;
 import dev.ioannis.anemosparts.domain.entity.AccountEntity;
+import org.mapstruct.Mapper;
+import org.mapstruct.factory.Mappers;
 
-public class AccountMapper {
-    public static Account convertToAccount(AccountEntity account) {
-        return new Account(account.getEmail(), account.getPassword());
-    }
+@Mapper
+public interface AccountMapper {
+    AccountMapper INSTANCE = Mappers.getMapper( AccountMapper.class );
 
-    public static AccountEntity convertToAccountEntity(Account account) {
-        return new AccountEntity(account.getEmail(), account.getPassword());
-    }
+    AccountEntity toAccountEntity(Account account);
+    Account toAccount(AccountEntity accountEntity);
 }

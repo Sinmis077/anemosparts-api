@@ -11,12 +11,14 @@ import java.util.Set;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Product {
+public class Part {
     private long id;
     private String name;
     private String description;
+    private String isbn;
+    private String partNumber;
     private double price;
     private int quantity;
 
-    private Set<Model> model;
+    private Set<Model> models;
 }
