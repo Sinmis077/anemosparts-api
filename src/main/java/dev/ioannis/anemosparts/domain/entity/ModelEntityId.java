@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ModelEntityId {
-    private String modelName;
-    private Long modelProductionYear;
+    private String name;
+    private Long productionYear;
 }

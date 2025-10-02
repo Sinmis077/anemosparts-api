@@ -16,5 +16,5 @@ import lombok.NoArgsConstructor;
 public class BrandEntity {
     @Id
     @Column(unique = true, nullable = false)
-    private String brandName;
+    private String name;
 }

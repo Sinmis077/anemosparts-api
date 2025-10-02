@@ -12,9 +12,9 @@ import lombok.NoArgsConstructor;
 @Data
 public class ModelEntity {
     @EmbeddedId
-    private ModelEntityId modelId;
+    private ModelEntityId id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "modelBrand", referencedColumnName = "brandName")
-    private BrandEntity modelBrand;
+    @JoinColumn(name = "brand", referencedColumnName = "name")
+    private BrandEntity brand;
 }

@@ -15,22 +15,22 @@ import java.util.Set;
 public class PartEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long partId;
-    private String partName;
-    private String partDescription;
-    private Double partPrice;
-    private String partIsbn;
-    private String partNumber;
-    private Integer partStock;
+    private Long id;
+    private String name;
+    private String description;
+    private Double price;
+    private String isbn;
+    private String number;
+    private Integer stock;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "part_model",
             joinColumns = @JoinColumn(name = "partId"),
             inverseJoinColumns = {
-                    @JoinColumn(name = "modelName", referencedColumnName = "modelName"),
-                    @JoinColumn(name = "modelProductionYear", referencedColumnName = "modelProductionYear")
+                    @JoinColumn(name = "modelName", referencedColumnName = "name"),
+                    @JoinColumn(name = "modelProductionYear", referencedColumnName = "productionYear")
             }
     )
-    private Set<ModelEntity> partModels;
+    private Set<ModelEntity> models;
 }

@@ -24,8 +24,6 @@ public class PartServiceImpl implements PartService {
             parts.add(PartMapper.INSTANCE.toProduct(entity));
         }
 
-//        parts.add(new Part(1, "test", "test", "12344131231", "2131", 2, 1, new HashSet<>()));
-
         return parts;
     }
 
