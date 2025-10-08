@@ -1,7 +1,8 @@
-package dev.ioannis.anemosparts.domain.entity;
+package dev.ioannis.anemosparts.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -10,6 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Builder
 public class ModelEntity {
     @EmbeddedId
     private ModelEntityId id;

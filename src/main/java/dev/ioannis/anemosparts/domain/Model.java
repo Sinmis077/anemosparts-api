@@ -15,7 +15,7 @@ import java.util.Objects;
 public class Model {
     private String name;
     private Long productionDate;
-    private String brand;
+    private Brand brand;
 
     @Override
     public boolean equals(Object o) {

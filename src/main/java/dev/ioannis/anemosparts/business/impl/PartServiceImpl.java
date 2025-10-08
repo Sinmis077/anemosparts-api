@@ -3,10 +3,10 @@ package dev.ioannis.anemosparts.business.impl;
 import dev.ioannis.anemosparts.business.PartService;
 import dev.ioannis.anemosparts.domain.Model;
 import dev.ioannis.anemosparts.domain.Part;
-import dev.ioannis.anemosparts.domain.entity.PartEntity;
 import dev.ioannis.anemosparts.mapper.PartMapper;
 import dev.ioannis.anemosparts.persistance.PartRepo;
 import lombok.AllArgsConstructor;
+import org.apache.commons.collections4.IterableUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -17,14 +17,11 @@ import java.util.Set;
 @Service
 @AllArgsConstructor
 public class PartServiceImpl implements PartService {
+
+    private final PartRepo partRepo;
     @Override
     public Set<Part> findAll() {
-        Set<Part> parts = new HashSet<>();
-        for(PartEntity entity : partRepo.findAll()){
-            parts.add(PartMapper.INSTANCE.toProduct(entity));
-        }
-
-        return parts;
+        return PartMapper.INSTANCE.toProducts(new HashSet<>(IterableUtils.toList(partRepo.findAll())));
     }
 
     @Override
@@ -80,8 +77,4 @@ public class PartServiceImpl implements PartService {
     public long delete(Part part) {
         return 0;
     }
-
-    private PartRepo partRepo;
-
-
 }

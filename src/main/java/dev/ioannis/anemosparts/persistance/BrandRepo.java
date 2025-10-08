@@ -1,7 +1,7 @@
 package dev.ioannis.anemosparts.persistance;
 
 import org.springframework.data.repository.CrudRepository;
-import dev.ioannis.anemosparts.domain.entity.BrandEntity;
+import dev.ioannis.anemosparts.entity.BrandEntity;
 import org.springframework.stereotype.Repository;
 
 @Repository

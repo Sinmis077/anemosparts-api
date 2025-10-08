@@ -1,4 +1,4 @@
-package dev.ioannis.anemosparts.domain.entity;
+package dev.ioannis.anemosparts.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

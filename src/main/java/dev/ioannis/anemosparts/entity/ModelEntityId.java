@@ -1,4 +1,4 @@
-package dev.ioannis.anemosparts.domain.entity;
+package dev.ioannis.anemosparts.entity;
 
 import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;
