@@ -1,7 +1,9 @@
 package dev.ioannis.anemosparts.business.impl;
 
 import dev.ioannis.anemosparts.business.ModelService;
+import dev.ioannis.anemosparts.domain.Brand;
 import dev.ioannis.anemosparts.domain.Model;
+import dev.ioannis.anemosparts.domain.Part;
 import dev.ioannis.anemosparts.mapper.ModelMapper;
 import dev.ioannis.anemosparts.persistance.ModelRepo;
 import lombok.AllArgsConstructor;
@@ -22,7 +24,27 @@ public class ModelServiceImpl implements ModelService {
     }
 
     @Override
+    public List<Model> findByPart(Part part) {
+        return List.of();
+    }
+
+    @Override
+    public List<Model> findByBrand(Brand brand) {
+        return List.of();
+    }
+
+    @Override
     public Optional<Model> findById(Model model) {
         return Optional.ofNullable(ModelMapper.INSTANCE.toModel(modelRepo.findById(ModelMapper.INSTANCE.toModelEntityId(model)).orElse(null)));
+    }
+
+    @Override
+    public Model save(Model model) {
+        return null;
+    }
+
+    @Override
+    public void delete(Model model) {
+
     }
 }
