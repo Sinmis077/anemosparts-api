@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
 import java.util.Objects;
 
 @Builder
@@ -14,7 +13,7 @@ import java.util.Objects;
 @NoArgsConstructor
 public class Model {
     private String name;
-    private Long productionDate;
+    private int productionYear;
     private Brand brand;
 
     @Override
@@ -24,6 +23,6 @@ public class Model {
         if (o == null || getClass() != o.getClass()) return false;
         Model model = (Model) o;
 
-        return Objects.equals(name, model.name) && Objects.equals(productionDate, model.productionDate) && Objects.equals(brand, model.brand);
+        return Objects.equals(name, model.name) && Objects.equals(productionYear, model.productionYear) && Objects.equals(brand, model.brand);
     }
 }

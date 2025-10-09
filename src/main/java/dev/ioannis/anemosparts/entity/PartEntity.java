@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Set;
+import java.util.List;
 
 @Entity
 @Table(name = "part")
@@ -19,6 +19,7 @@ public class PartEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
+    @Column(length = 500)
     private String description;
     private Double price;
     private String isbn;
@@ -34,5 +35,5 @@ public class PartEntity {
                     @JoinColumn(name = "modelProductionYear", referencedColumnName = "productionYear")
             }
     )
-    private Set<ModelEntity> models;
+    private List<ModelEntity> models;
 }

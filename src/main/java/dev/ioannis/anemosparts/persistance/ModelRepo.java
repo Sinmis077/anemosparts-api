@@ -1,8 +1,8 @@
 package dev.ioannis.anemosparts.persistance;
 
-import org.springframework.data.repository.CrudRepository;
 import dev.ioannis.anemosparts.entity.ModelEntity;
 import dev.ioannis.anemosparts.entity.ModelEntityId;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
