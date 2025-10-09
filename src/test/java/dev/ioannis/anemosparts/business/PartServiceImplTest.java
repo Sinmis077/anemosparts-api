@@ -89,7 +89,7 @@ class PartServiceImplTest {
 
     @Test
     void findByModel_found_nothing() {
-        var model = new Model("TZR250", 1991, new Brand("Yamaha"));
+        var model = new Model("TZR250", 1991, new Brand(1L, "Yamaha"));
         var modelEntityId = new ModelEntityId("TZR250", 1991);
 
         when(partRepo.findByModels(any(ModelEntityId.class))).thenReturn(List.of());
@@ -103,11 +103,11 @@ class PartServiceImplTest {
 
     @Test
     void findByModel_found_something() {
-        var model = new Model("TZR250", 1991, new Brand("Yamaha"));
+        var model = new Model("TZR250", 1991, new Brand(1L, "Yamaha"));
         var modelEntityId = new ModelEntityId("TZR250", 1991);
         var modelEntity = ModelEntity.builder()
                 .id(modelEntityId)
-                .brand(new BrandEntity("Yamaha"))
+                .brand(new BrandEntity(1L, "Yamaha"))
                 .build();
         var partEntity = PartEntity.builder()
                 .id(1L)

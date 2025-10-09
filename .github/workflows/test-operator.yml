@@ -30,6 +30,8 @@ jobs:
         run: ./gradlew build -x test
 
   Test:
+    needs: Build
+
     runs-on: ubuntu-latest
 
     steps:
