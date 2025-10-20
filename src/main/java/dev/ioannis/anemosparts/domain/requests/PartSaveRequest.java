@@ -14,6 +14,8 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 public class PartSaveRequest {
+    private Long id;
+
     @NotBlank
     @Size(min = 1, max = 100, message = "Name must be between 1 and 100 characters long")
     private String name;

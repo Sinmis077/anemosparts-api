@@ -10,7 +10,7 @@ import org.hibernate.annotations.ColumnDefault;
 import java.util.List;
 
 @Entity
-@Table(name = "part")
+@Table(name = "parts")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
@@ -27,7 +27,7 @@ public class Part {
     @ColumnDefault("10")
     private Double price;
     @ManyToOne(fetch = FetchType.LAZY)
-    private OemNumber OemNumber;
+    private OemNumber oemNumber;
     @Column(length = 20, nullable = false)
     private String partNumber;
     @ColumnDefault("1")

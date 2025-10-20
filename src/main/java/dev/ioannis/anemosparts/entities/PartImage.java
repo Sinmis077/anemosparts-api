@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 
 @Entity
+@Table(name = "part_images")
 @NoArgsConstructor
 @Data
 public class PartImage {
@@ -17,7 +18,7 @@ public class PartImage {
     private String source;
 
     @ColumnDefault("false")
-    private Boolean main;
+    private Boolean thumbnail;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Part part;

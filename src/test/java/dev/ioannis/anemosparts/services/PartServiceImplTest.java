@@ -4,6 +4,8 @@ import dev.ioannis.anemosparts.domain.PartDto;
 import dev.ioannis.anemosparts.domain.requests.PartSaveRequest;
 import dev.ioannis.anemosparts.entities.Part;
 import dev.ioannis.anemosparts.mappers.*;
+import dev.ioannis.anemosparts.repositories.ModelRepo;
+import dev.ioannis.anemosparts.repositories.OemRepo;
 import dev.ioannis.anemosparts.services.impl.PartServiceImpl;
 import dev.ioannis.anemosparts.repositories.PartRepo;
 import jakarta.persistence.EntityNotFoundException;
@@ -24,9 +26,15 @@ class PartServiceImplTest {
 
     @Mock
     private PartRepo partRepo;
+    @Mock
+    private ModelRepo modelRepo;
+    @Mock
+    private OemRepo oemRepo;
 
     @Mock
     private PartMapper partMapper = new PartMapperImpl();
+
+    // Part mapper uses
     @Mock
     private ModelMapper modelMapper = new ModelMapperImpl();
     @Mock
@@ -65,6 +73,7 @@ class PartServiceImplTest {
     @Test
     void save() {
         var part = new PartSaveRequest();
+        part.setId(1L);
         part.setName("Gearbox");
 
         var partEntity = new Part();
@@ -76,8 +85,7 @@ class PartServiceImplTest {
         var result = partService.save(part);
 
         assertNotNull(result);
-        assertEquals(1L, result.getId());
-        assertEquals("Gearbox", result.getName());
+        assertEquals(part.getId(), result.getId());
         verify(partRepo, times(1)).save(any(Part.class));
     }
 

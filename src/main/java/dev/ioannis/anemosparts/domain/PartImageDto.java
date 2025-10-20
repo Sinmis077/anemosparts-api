@@ -12,5 +12,4 @@ import lombok.NoArgsConstructor;
 public class PartImageDto {
     private String id;
     private String source;
-    private boolean isMain = false;
 }
