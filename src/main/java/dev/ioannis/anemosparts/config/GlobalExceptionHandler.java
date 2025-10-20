@@ -20,7 +20,7 @@ public class GlobalExceptionHandler {
                 .collect(Collectors.toList());
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(new ErrorResponse(false,"Validation failed", errors));
+                .body(new ErrorResponse(false, "Validation failed", errors));
     }
 
     // Handle other exceptions too

@@ -33,6 +33,7 @@ dependencies {
     implementation("org.apache.commons:commons-lang3:3.19.0")
     implementation("org.apache.commons:commons-collections4:4.5.0")
     implementation("org.springframework.boot:spring-boot-starter-validation")
+    implementation("me.paulschwarz:spring-dotenv:4.0.0")
 
     // Annotation Processors
     annotationProcessor("org.projectlombok:lombok")
