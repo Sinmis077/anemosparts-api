@@ -19,7 +19,4 @@ public class PartImage {
 
     @ColumnDefault("false")
     private Boolean thumbnail;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Part part;
 }

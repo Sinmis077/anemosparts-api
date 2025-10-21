@@ -34,6 +34,9 @@ public class Part {
     @Column(nullable = false)
     private Integer quantity;
 
+    @OneToMany(fetch = FetchType.LAZY)
+    private List<PartImage> images;
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "part_model", joinColumns = @JoinColumn(name = "partId"), inverseJoinColumns = {@JoinColumn(name = "modelId", referencedColumnName = "id"),})
     private List<Model> models;

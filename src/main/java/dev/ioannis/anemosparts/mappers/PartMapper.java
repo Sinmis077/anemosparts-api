@@ -1,16 +1,10 @@
 package dev.ioannis.anemosparts.mappers;
 
 import dev.ioannis.anemosparts.domain.PartDto;
-import dev.ioannis.anemosparts.domain.requests.PartSaveRequest;
-import dev.ioannis.anemosparts.entities.OemNumber;
 import dev.ioannis.anemosparts.entities.Part;
 import dev.ioannis.anemosparts.repositories.ModelRepo;
 import dev.ioannis.anemosparts.repositories.OemRepo;
 import lombok.AllArgsConstructor;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
-import org.mapstruct.Named;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -21,11 +15,11 @@ public class PartMapper {
 
     private ModelRepo modelRepo;
     private ModelMapper modelMapper;
-    private PartImageMapper partImageMapper;
+    private PartImageMapper imageMapper;
     private OemRepo oemRepo;
 
     public PartDto toDto(Part entity) {
-        var  partDto = new PartDto();
+        var partDto = new PartDto();
         partDto.setId(entity.getId());
         partDto.setName(entity.getName());
         partDto.setDescription(entity.getDescription());
@@ -34,29 +28,36 @@ public class PartMapper {
         partDto.setQuantity(entity.getQuantity());
         partDto.setOemNumber(entity.getOemNumber().getNumber());
 
-//        partDto.setImages(partImageMapper.toDto(entity.));
+        partDto.setImages(imageMapper.toDtos(entity.getImages()));
 
-        var models = modelMapper.toDtos(entity.getModels());
+        partDto.setModels(modelMapper.toDtos(entity.getModels()));
 
-
-        if(entity.getOemNumber() != null && oemRepo.existsByNumber(entity.getOemNumber().getNumber())) {
-        }
-
+        return partDto;
     }
 
-    @Mapping(target = "oemNumber", source = "oemNumber", qualifiedByName = "oemNumberToString")
-    PartDto toDto(Part entity);
+    public Part toEntity(PartDto dto) {
+        var part = new Part();
+        part.setId(dto.getId());
+        part.setName(dto.getName());
+        part.setDescription(dto.getDescription());
+        part.setPartNumber(dto.getPartNumber());
+        part.setPrice(dto.getPrice());
+        part.setQuantity(dto.getQuantity());
 
-    @Mapping(target = "oemNumber", ignore = true)
-    Part toEntity(PartDto part);
+        part.setOemNumber(oemRepo.findByNumber(dto.getOemNumber()));
 
-    @Mapping(target = "oemNumber", source = "oemNumber", qualifiedByName = "oemNumberToString")
-    List<PartDto> toDtos(List<Part> parts);
+        part.setImages(imageMapper.toEntities(dto.getImages()));
 
-    List<Part> toEntities(List<PartDto> parts);
+        part.setModels(modelMapper.toEntities(dto.getModels()));
 
-    @Named("oemNumberToString")
-    default String oemToString(OemNumber entity) {
-        return entity != null ? entity.getNumber() : null;
+        return part;
+    }
+
+    public List<PartDto> toDtos(List<Part> entities) {
+        return  entities.stream().map(this::toDto).toList();
+    }
+
+    public List<Part> toEntities(List<PartDto> dtos) {
+        return dtos.stream().map(this::toEntity).toList();
     }
 }

@@ -1,17 +1,20 @@
 package dev.ioannis.anemosparts.mappers;
 
 import dev.ioannis.anemosparts.domain.PartImageDto;
-import dev.ioannis.anemosparts.entities.Part;
 import dev.ioannis.anemosparts.entities.PartImage;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
+
+import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface PartImageMapper {
 
-    @Mapping(target = "part", ignore = true)
-    PartImage toEntity(PartImageDto partImageDto);
+    PartImage toEntity(PartImageDto imageDto);
 
-    PartImageDto toDto(PartImage partImage);
+    PartImageDto toDto(PartImage image);
+
+    List<PartImageDto> toDtos(List<PartImage> images);
+
+    List<PartImage> toEntities(List<PartImageDto> images);
 }

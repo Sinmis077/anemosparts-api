@@ -32,13 +32,16 @@ class PartServiceImplTest {
     private OemRepo oemRepo;
 
     @Mock
-    private PartMapper partMapper = new PartMapperImpl();
+    private PartMapper partMapper;
 
     // Part mapper uses
     @Mock
     private ModelMapper modelMapper = new ModelMapperImpl();
     @Mock
     private BrandMapper brandMapper = new BrandMapperImpl();
+    @Mock
+    private PartImageMapper partImageMapper = new PartImageMapperImpl();
+
 
     @InjectMocks
     private PartServiceImpl partService;
