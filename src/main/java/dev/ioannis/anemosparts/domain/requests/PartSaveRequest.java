@@ -1,6 +1,5 @@
 package dev.ioannis.anemosparts.domain.requests;
 
-import dev.ioannis.anemosparts.domain.PartImageDto;
 import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
@@ -14,8 +13,6 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 public class PartSaveRequest {
-    private Long id;
-
     @NotBlank
     @Size(min = 1, max = 100, message = "Name must be between 1 and 100 characters long")
     private String name;

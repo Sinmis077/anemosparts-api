@@ -3,7 +3,6 @@ package dev.ioannis.anemosparts.mappers;
 import dev.ioannis.anemosparts.domain.PartImageDto;
 import dev.ioannis.anemosparts.entities.PartImage;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 
 import java.util.List;
 

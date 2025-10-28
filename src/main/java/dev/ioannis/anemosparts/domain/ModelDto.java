@@ -1,5 +1,9 @@
 package dev.ioannis.anemosparts.domain;
 
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,9 +16,14 @@ import java.util.Objects;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ModelDto {
-    private long id;
+    private Long id;
+    @NotBlank
     private String name;
-    private int productionYear;
+    @NotNull
+    @Min(1885)
+    @Max(2026)
+    private Integer productionYear;
+    @NotNull
     private BrandDto brand;
 
     @Override

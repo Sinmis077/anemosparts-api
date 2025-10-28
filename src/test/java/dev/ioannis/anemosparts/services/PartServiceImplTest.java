@@ -6,8 +6,8 @@ import dev.ioannis.anemosparts.entities.Part;
 import dev.ioannis.anemosparts.mappers.*;
 import dev.ioannis.anemosparts.repositories.ModelRepo;
 import dev.ioannis.anemosparts.repositories.OemRepo;
-import dev.ioannis.anemosparts.services.impl.PartServiceImpl;
 import dev.ioannis.anemosparts.repositories.PartRepo;
+import dev.ioannis.anemosparts.services.impl.PartServiceImpl;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -76,7 +76,6 @@ class PartServiceImplTest {
     @Test
     void save() {
         var part = new PartSaveRequest();
-        part.setId(1L);
         part.setName("Gearbox");
 
         var partEntity = new Part();
@@ -88,7 +87,7 @@ class PartServiceImplTest {
         var result = partService.save(part);
 
         assertNotNull(result);
-        assertEquals(part.getId(), result.getId());
+        assertEquals(part.getName(), result.getName());
         verify(partRepo, times(1)).save(any(Part.class));
     }
 

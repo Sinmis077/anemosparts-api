@@ -8,7 +8,6 @@ import dev.ioannis.anemosparts.repositories.ModelRepo;
 import dev.ioannis.anemosparts.repositories.OemRepo;
 import dev.ioannis.anemosparts.repositories.PartRepo;
 import dev.ioannis.anemosparts.services.PartService;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,7 +34,6 @@ public class PartServiceImpl implements PartService {
     @Transactional
     public PartDto save(PartSaveRequest request) {
         Part part = Part.builder()
-                .id(request.getId())
                 .name(request.getName())
                 .partNumber(request.getPartNumber())
                 .price(request.getPrice())
@@ -51,11 +49,26 @@ public class PartServiceImpl implements PartService {
     }
 
     @Override
-    public void delete(long partId) {
-        if (!partRepo.existsById(partId)) {
-            throw new EntityNotFoundException("Part with id " + partId + " not found");
+    public PartDto update(Long id, PartSaveRequest request) {
+        Part part = Part.builder()
+                .id(id)
+                .name(request.getName())
+                .partNumber(request.getPartNumber())
+                .price(request.getPrice())
+                .description(request.getDescription())
+                .models(modelRepo.findAllById(request.getModelIds()))
+                .build();
+
+        if(oemRepo.existsByNumber(request.getOemNumber())) {
+            part.setOemNumber(oemRepo.findByNumber(request.getOemNumber()));
         }
 
-        partRepo.deleteById(partId);
+        return mapper.toDto(partRepo.save(part));
+    }
+
+
+    @Override
+    public void delete(long id) {
+        partRepo.deleteById(id);
     }
 }

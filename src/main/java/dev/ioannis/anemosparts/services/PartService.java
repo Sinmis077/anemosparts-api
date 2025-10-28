@@ -12,5 +12,7 @@ public interface PartService {
 
     PartDto save(PartSaveRequest request);
 
+    PartDto update(Long id, PartSaveRequest request);
+
     void delete(long partId);
 }

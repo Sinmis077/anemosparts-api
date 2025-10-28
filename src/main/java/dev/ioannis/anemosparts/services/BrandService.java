@@ -9,5 +9,7 @@ public interface BrandService {
 
     BrandDto save(BrandDto brandDTO);
 
+    BrandDto update(Long id, BrandDto request);
+
     void delete(Long id);
 }
