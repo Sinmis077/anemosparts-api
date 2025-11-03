@@ -3,7 +3,11 @@ package dev.ioannis.anemosparts.services.impl;
 import dev.ioannis.anemosparts.domain.PartDto;
 import dev.ioannis.anemosparts.domain.requests.PartSaveRequest;
 import dev.ioannis.anemosparts.domain.responses.PartFindAllResponse;
+import dev.ioannis.anemosparts.entities.Model;
+import dev.ioannis.anemosparts.entities.OemNumber;
 import dev.ioannis.anemosparts.entities.Part;
+import dev.ioannis.anemosparts.exceptions.NullModelsFoundException;
+import dev.ioannis.anemosparts.exceptions.OemNumberDoesNotExistException;
 import dev.ioannis.anemosparts.mappers.PartMapper;
 import dev.ioannis.anemosparts.repositories.ModelRepo;
 import dev.ioannis.anemosparts.repositories.OemRepo;
@@ -15,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @AllArgsConstructor
-@Transactional(readOnly = true)
+@Transactional
 public class PartServiceImpl implements PartService {
 
     private final PartRepo partRepo;
@@ -25,46 +29,53 @@ public class PartServiceImpl implements PartService {
     private final PartMapper mapper;
 
     @Override
+    @Transactional(readOnly = true)
     public PartFindAllResponse findAll() {
         return new PartFindAllResponse(mapper.toSummaries(partRepo.findAll()));
     }
 
     @Override
-    @Transactional
     public PartDto save(PartSaveRequest request) {
-        Part part = Part.builder()
-                .name(request.getName())
-                .partNumber(request.getPartNumber())
-                .price(request.getPrice())
-                .description(request.getDescription())
-                .models(modelRepo.findAllById(request.getModelIds()))
-                .build();
+        var part = new Part();
+        part.setName(request.getName());
+        part.setPartNumber(request.getPartNumber());
+        part.setOemNumber(OemNumber.builder().number(request.getOemNumber()).build());
+        part.setPrice(request.getPrice());
+        part.setDescription(request.getDescription());
+        part.setModels(request.getModelIds().stream().map(modelId -> Model.builder().id(modelId).build()).toList());
 
-        if(oemRepo.existsByNumber(request.getOemNumber())) {
-            part.setOemNumber(oemRepo.findByNumber(request.getOemNumber()));
-        }
-
-        return mapper.toDto(partRepo.save(part));
+        return mapper.toDto(save(part));
     }
 
     @Override
     public PartDto update(Long id, PartSaveRequest request) {
-        Part part = Part.builder()
-                .id(id)
-                .name(request.getName())
-                .partNumber(request.getPartNumber())
-                .price(request.getPrice())
-                .description(request.getDescription())
-                .models(modelRepo.findAllById(request.getModelIds()))
-                .build();
+        var part = new Part();
+        part.setId(id);
+        part.setName(request.getName());
+        part.setPartNumber(request.getPartNumber());
+        part.setOemNumber(OemNumber.builder().number(request.getOemNumber()).build());
+        part.setPrice(request.getPrice());
+        part.setDescription(request.getDescription());
+        part.setModels(request.getModelIds().stream().map(modelId -> Model.builder().id(modelId).build()).toList());
 
-        if(oemRepo.existsByNumber(request.getOemNumber())) {
-            part.setOemNumber(oemRepo.findByNumber(request.getOemNumber()));
-        }
-
-        return mapper.toDto(partRepo.save(part));
+        return mapper.toDto(save(part));
     }
 
+    protected Part save(Part part) {
+        if(modelRepo.findAllById(part.getModels().stream().map(Model::getId).toList()).size() != part.getModels().size()) {
+            throw new NullModelsFoundException("");
+        }
+
+        part.setModels(modelRepo.findAllById(part.getModels().stream().map(Model::getId).toList()));
+
+        if(oemRepo.existsByNumber(part.getOemNumber().getNumber())) {
+            throw new OemNumberDoesNotExistException("");
+        }
+
+        part.setOemNumber(oemRepo.findByNumber(part.getOemNumber().getNumber()));
+
+        return partRepo.save(part);
+    }
 
     @Override
     public void delete(long id) {

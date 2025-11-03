@@ -10,14 +10,17 @@ import dev.ioannis.anemosparts.services.BrandService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @AllArgsConstructor
+@Transactional
 public class BrandServiceImpl implements BrandService {
     private final BrandRepo brandRepo;
     private final BrandMapper mapper;
 
     @Override
+    @Transactional(readOnly = true)
     public BrandFindAllResponse findAll() {
         return new BrandFindAllResponse(brandRepo.findAll().stream().map(mapper::toDto).toList());
     }
@@ -28,11 +31,7 @@ public class BrandServiceImpl implements BrandService {
         brand.setName(request.getName());
         brand.setIcon(request.getIconSrc());
 
-        if(brand.getIcon() == null && request.getIconSrc() != null) {
-            throw new IllegalMonitorStateException("Brand has no icons");
-        }
-
-        return mapper.toDto(brandRepo.save(brand));
+        return mapper.toDto(save(brand));
     }
 
     @Override
@@ -41,7 +40,11 @@ public class BrandServiceImpl implements BrandService {
         brand.setId(id);
         brand.setName(request.getName());
 
-        return mapper.toDto(brandRepo.save(brand));
+        return mapper.toDto(save(brand));
+    }
+
+    protected Brand save(Brand brand) {
+        return brandRepo.save(brand);
     }
 
     @Override

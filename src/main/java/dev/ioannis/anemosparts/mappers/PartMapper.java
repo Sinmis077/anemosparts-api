@@ -18,7 +18,6 @@ import java.util.Optional;
 @AllArgsConstructor
 public class PartMapper {
 
-    private ModelRepo modelRepo;
     private ModelMapper modelMapper;
     private PartImageMapper imageMapper;
     private OemRepo oemRepo;
