@@ -2,6 +2,7 @@ package dev.ioannis.anemosparts.services.impl;
 
 import dev.ioannis.anemosparts.domain.PartDto;
 import dev.ioannis.anemosparts.domain.requests.PartSaveRequest;
+import dev.ioannis.anemosparts.domain.responses.PartFindAllResponse;
 import dev.ioannis.anemosparts.entities.Part;
 import dev.ioannis.anemosparts.mappers.PartMapper;
 import dev.ioannis.anemosparts.repositories.ModelRepo;
@@ -11,8 +12,6 @@ import dev.ioannis.anemosparts.services.PartService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -26,8 +25,8 @@ public class PartServiceImpl implements PartService {
     private final PartMapper mapper;
 
     @Override
-    public List<PartDto> findAll() {
-        return mapper.toDtos(partRepo.findAll());
+    public PartFindAllResponse findAll() {
+        return new PartFindAllResponse(mapper.toSummaries(partRepo.findAll()));
     }
 
     @Override

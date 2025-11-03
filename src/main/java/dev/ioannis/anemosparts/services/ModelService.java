@@ -2,11 +2,10 @@ package dev.ioannis.anemosparts.services;
 
 import dev.ioannis.anemosparts.domain.ModelDto;
 import dev.ioannis.anemosparts.domain.requests.ModelSaveRequest;
-
-import java.util.List;
+import dev.ioannis.anemosparts.domain.responses.ModelFindAllResponse;
 
 public interface ModelService {
-    List<ModelDto> findAll();
+    ModelFindAllResponse findAll();
 
     ModelDto save(ModelSaveRequest request);
 

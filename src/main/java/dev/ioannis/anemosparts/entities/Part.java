@@ -26,7 +26,8 @@ public class Part {
     private String description;
     @ColumnDefault("10")
     private Double price;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
+    @JoinColumn(name = "oem_number", referencedColumnName = "id")
     private OemNumber oemNumber;
     @Column(length = 20, nullable = false)
     private String partNumber;
@@ -34,10 +35,10 @@ public class Part {
     @Column(nullable = false)
     private Integer quantity;
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "part")
     private List<PartImage> images;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany
     @JoinTable(name = "part_model", joinColumns = @JoinColumn(name = "partId"), inverseJoinColumns = {@JoinColumn(name = "modelId", referencedColumnName = "id"),})
     private List<Model> models;
 }

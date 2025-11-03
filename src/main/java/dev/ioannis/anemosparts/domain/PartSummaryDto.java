@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @Builder
@@ -19,7 +20,7 @@ public class PartSummaryDto {
     private String oemNumber;
     private String partNumber;
     private Double price;
-    private String thumbnailSrc;
+    private Optional<String> thumbnailSrc;
 
     private List<Long> modelIds;
 }

@@ -53,7 +53,7 @@ class PartServiceImplTest {
         var result = partService.findAll();
 
         assertNotNull(result);
-        assertTrue(result.isEmpty());
+        assertTrue(result.parts().isEmpty());
         verify(partRepo, times(1)).findAll();
     }
 
@@ -68,8 +68,8 @@ class PartServiceImplTest {
         var result = partService.findAll();
 
         assertNotNull(result);
-        assertFalse(result.isEmpty());
-        assertEquals(1, result.size());
+        assertFalse(result.parts().isEmpty());
+        assertEquals(1, result.parts().size());
         verify(partRepo, times(1)).findAll();
     }
 

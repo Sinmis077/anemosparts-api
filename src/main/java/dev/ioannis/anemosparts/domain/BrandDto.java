@@ -12,6 +12,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class BrandDto {
     private Long id;
+
     @NotNull
     private String name;
+
+    private String icon;
+
+    @Override
+    public String toString() {
+        return this.name;
+    }
 }

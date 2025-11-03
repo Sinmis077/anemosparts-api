@@ -19,4 +19,8 @@ public class PartImage {
 
     @ColumnDefault("false")
     private Boolean thumbnail;
+
+    @ManyToOne
+    @JoinColumn(name = "part_id", referencedColumnName = "id")
+    private Part part;
 }

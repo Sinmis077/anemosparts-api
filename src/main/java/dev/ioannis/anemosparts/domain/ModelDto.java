@@ -35,4 +35,9 @@ public class ModelDto {
 
         return Objects.equals(name, modelDto.name) && Objects.equals(productionYear, modelDto.productionYear) && Objects.equals(brand, modelDto.brand);
     }
+
+    @Override
+    public String toString() {
+        return this.brand.getName() + this.name + "(" + this.productionYear + ")";
+    }
 }

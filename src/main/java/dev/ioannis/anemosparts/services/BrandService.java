@@ -1,15 +1,15 @@
 package dev.ioannis.anemosparts.services;
 
 import dev.ioannis.anemosparts.domain.BrandDto;
-
-import java.util.List;
+import dev.ioannis.anemosparts.domain.requests.BrandSaveRequest;
+import dev.ioannis.anemosparts.domain.responses.BrandFindAllResponse;
 
 public interface BrandService {
-    List<BrandDto> findAll();
+    BrandFindAllResponse findAll();
 
-    BrandDto save(BrandDto brandDTO);
+    BrandDto save(BrandSaveRequest request);
 
-    BrandDto update(Long id, BrandDto request);
+    BrandDto update(Long id, BrandSaveRequest request);
 
     void delete(Long id);
 }

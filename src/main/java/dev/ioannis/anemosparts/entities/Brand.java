@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
 @Table(name = "brands")
 @AllArgsConstructor
@@ -16,4 +18,10 @@ public class Brand {
     private Long id;
     @Column(unique = true, nullable = false)
     private String name;
+
+    @Column(nullable = true)
+    private String icon;
+
+    @OneToMany(mappedBy = "brand")
+    private List<Model> models;
 }

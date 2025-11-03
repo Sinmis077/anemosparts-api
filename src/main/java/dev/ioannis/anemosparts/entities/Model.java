@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
 @Table(name = "models")
 @AllArgsConstructor
@@ -22,7 +24,13 @@ public class Model {
     @Column(nullable = false)
     private Integer productionYear;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "brand", referencedColumnName = "name")
+    @ManyToOne
+    @JoinColumn(name = "brand", referencedColumnName = "id")
     private Brand brand;
+
+    @ManyToMany(mappedBy = "models")
+    private List<Part> parts;
+
+    @ManyToMany(mappedBy = "models")
+    private List<OemNumber> oemNumbers;
 }

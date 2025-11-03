@@ -19,7 +19,10 @@ public class OemNumber {
     @Column(length = 20, unique = true, nullable = false)
     private String number;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany
     @JoinTable(name = "oemnumber_model", joinColumns = @JoinColumn(name = "oeam_number_id", referencedColumnName = "id"), inverseJoinColumns = {@JoinColumn(name = "modelid", referencedColumnName = "id"),})
-    private List<Model> model;
+    private List<Model> models;
+
+    @OneToMany(mappedBy = "oemNumber")
+    private List<Part> parts;
 }
