@@ -29,7 +29,7 @@ public class BrandServiceImpl implements BrandService {
     public BrandDto save(BrandSaveRequest request) {
         var brand = new Brand();
         brand.setName(request.getName());
-        brand.setIcon(request.getIconSrc());
+        brand.setIcon("");
 
         return mapper.toDto(save(brand));
     }
@@ -39,6 +39,7 @@ public class BrandServiceImpl implements BrandService {
         var brand = new Brand();
         brand.setId(id);
         brand.setName(request.getName());
+        brand.setIcon(request.getIconSrc());
 
         return mapper.toDto(save(brand));
     }
