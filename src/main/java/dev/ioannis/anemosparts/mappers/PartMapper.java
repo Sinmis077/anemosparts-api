@@ -96,10 +96,14 @@ public class PartMapper {
 
         // OEM number can be null this is not a mistake.
         if(request.getOemNumber() != null) {
-            part.setOemNumber(OemNumber.builder().number(request.getOemNumber()).build());
+            if (!request.getOemNumber().isBlank()) {
+                part.setOemNumber(OemNumber.builder().number(request.getOemNumber()).build());
+            }
         }
+        else part.setOemNumber(null);
 
         part.setPrice(request.getPrice());
+        part.setQuantity(request.getQuantity());
         part.setDescription(request.getDescription());
 
         part.setModels(request.getModelIds().stream().map(modelId -> Model.builder().id(modelId).build()).toList());

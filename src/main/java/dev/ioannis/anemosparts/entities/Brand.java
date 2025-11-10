@@ -1,5 +1,6 @@
 package dev.ioannis.anemosparts.entities;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,5 +24,6 @@ public class Brand {
     private String iconUrl;
 
     @OneToMany(mappedBy = "brand")
+    @JsonManagedReference
     private List<Model> models;
 }

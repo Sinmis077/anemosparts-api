@@ -24,7 +24,7 @@ public class OemNumber {
     private String number;
 
     @ManyToMany
-    @JoinTable(name = "oemnumber_model", joinColumns = @JoinColumn(name = "oeam_number_id", referencedColumnName = "id"), inverseJoinColumns = {@JoinColumn(name = "modelid", referencedColumnName = "id"),})
+    @JoinTable(name = "oemnumber_model", joinColumns = @JoinColumn(name = "oem_number_id", referencedColumnName = "id"), inverseJoinColumns = {@JoinColumn(name = "modelid", referencedColumnName = "id"),})
     private List<Model> models;
 
     @OneToMany(mappedBy = "oemNumber")

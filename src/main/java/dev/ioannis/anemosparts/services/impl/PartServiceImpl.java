@@ -62,14 +62,16 @@ public class PartServiceImpl implements PartService {
             throw new EntityModelsNotFoundException("");
         }
 
-        part.setModels(modelRepo.findAllById(part.getModels().stream().map(Model::getId).toList()));
-
         if(part.getOemNumber() != null) {
             if(oemRepo.existsByNumber(part.getOemNumber().getNumber()))
                 part.setOemNumber(oemRepo.findByNumber(part.getOemNumber().getNumber()));
 
             else throw new OemNumberDoesNotExistException("");
         }
+
+
+
+//        part.setModels(modelRepo.findAllById(part.getModels().stream().map(Model::getId).toList()));
 
         return partRepo.save(part);
     }
