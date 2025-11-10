@@ -16,7 +16,7 @@ public class BrandDto {
     @NotNull
     private String name;
 
-    private String icon;
+    private String iconUrl;
 
     @Override
     public String toString() {

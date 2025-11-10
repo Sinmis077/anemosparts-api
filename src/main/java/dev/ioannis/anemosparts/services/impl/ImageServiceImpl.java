@@ -48,6 +48,6 @@ public class ImageServiceImpl implements ImageService {
         Path path = Paths.get(uploadDir, fileName);
         Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
 
-        return accessSrc + uploadDir + fileName;
+        return accessSrc + fileName;
     }
 }

@@ -20,7 +20,7 @@ public class Brand {
     private String name;
 
     @Column(nullable = true)
-    private String icon;
+    private String iconUrl;
 
     @OneToMany(mappedBy = "brand")
     private List<Model> models;

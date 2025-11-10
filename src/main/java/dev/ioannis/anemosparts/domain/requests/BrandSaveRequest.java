@@ -14,5 +14,5 @@ import org.springframework.web.multipart.MultipartFile;
 public class BrandSaveRequest {
     @NotNull
     private String name;
-    private String iconSrc;
+    private String iconUrl;
 }
