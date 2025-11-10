@@ -2,7 +2,9 @@ package dev.ioannis.anemosparts.mappers;
 
 import dev.ioannis.anemosparts.domain.PartDto;
 import dev.ioannis.anemosparts.domain.PartSummaryDto;
+import dev.ioannis.anemosparts.domain.requests.PartSaveRequest;
 import dev.ioannis.anemosparts.entities.Model;
+import dev.ioannis.anemosparts.entities.OemNumber;
 import dev.ioannis.anemosparts.entities.Part;
 import dev.ioannis.anemosparts.entities.PartImage;
 import dev.ioannis.anemosparts.repositories.ModelRepo;
@@ -85,5 +87,23 @@ public class PartMapper {
         }
 
         return summaries;
+    }
+
+    public Part toEntity(PartSaveRequest request) {
+        var part = new Part();
+        part.setName(request.getName());
+        part.setPartNumber(request.getPartNumber());
+
+        // OEM number can be null this is not a mistake.
+        if(request.getOemNumber() != null) {
+            part.setOemNumber(OemNumber.builder().number(request.getOemNumber()).build());
+        }
+
+        part.setPrice(request.getPrice());
+        part.setDescription(request.getDescription());
+
+        part.setModels(request.getModelIds().stream().map(modelId -> Model.builder().id(modelId).build()).toList());
+
+        return part;
     }
 }

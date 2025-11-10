@@ -19,7 +19,7 @@ public class PartSaveRequest {
     @NotBlank
     @Size(min = 10, max = 500, message = "The description must be between 10 and 500 words long")
     private String description;
-    @NotBlank
+
     private String oemNumber;
     @NotBlank
     private String partNumber;

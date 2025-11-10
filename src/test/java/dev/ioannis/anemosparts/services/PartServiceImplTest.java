@@ -1,7 +1,9 @@
 package dev.ioannis.anemosparts.services;
 
 import dev.ioannis.anemosparts.domain.PartDto;
+import dev.ioannis.anemosparts.domain.PartSummaryDto;
 import dev.ioannis.anemosparts.domain.requests.PartSaveRequest;
+import dev.ioannis.anemosparts.entities.Model;
 import dev.ioannis.anemosparts.entities.Part;
 import dev.ioannis.anemosparts.mappers.*;
 import dev.ioannis.anemosparts.repositories.ModelRepo;
@@ -30,18 +32,8 @@ class PartServiceImplTest {
     private ModelRepo modelRepo;
     @Mock
     private OemRepo oemRepo;
-
     @Mock
     private PartMapper partMapper;
-
-    // Part mapper uses
-    @Mock
-    private ModelMapper modelMapper = new ModelMapperImpl();
-    @Mock
-    private BrandMapper brandMapper = new BrandMapperImpl();
-    @Mock
-    private PartImageMapper partImageMapper = new PartImageMapperImpl();
-
 
     @InjectMocks
     private PartServiceImpl partService;
@@ -63,7 +55,12 @@ class PartServiceImplTest {
         partEntity.setId(1L);
         partEntity.setName("Gearbox");
 
+        var partDto = new PartSummaryDto();
+        partDto.setId(partEntity.getId());
+        partDto.setName(partEntity.getName());
+
         when(partRepo.findAll()).thenReturn(List.of(partEntity));
+        when(partMapper.toSummaries(any(List.class))).thenReturn(List.of(partDto));
 
         var result = partService.findAll();
 
@@ -74,15 +71,30 @@ class PartServiceImplTest {
     }
 
     @Test
+    void save_missing_modelIds() {
+        var part = new PartSaveRequest();
+        part.setName("Gearbox");
+
+        assertThrows(IllegalArgumentException.class, () -> partService.save(part));
+
+        verify(partRepo, times(0)).save(any(Part.class));
+    }
+
+    @Test
     void save() {
         var part = new PartSaveRequest();
         part.setName("Gearbox");
+        part.setModelIds(List.of(1L, 2L));
 
         var partEntity = new Part();
         partEntity.setId(1L);
         partEntity.setName("Gearbox");
+        partEntity.setModels(List.of(Model.builder().id(1L).build(), Model.builder().id(2L).build()));
 
         when(partRepo.save(any(Part.class))).thenReturn(partEntity);
+        when(partMapper.toEntity(any(PartSaveRequest.class))).thenReturn(partEntity);
+        when(modelRepo.findAllById(any(List.class))).thenReturn(List.of(new Model(), new Model()));
+        when(partMapper.toDto(any(Part.class))).thenReturn(PartDto.builder().id(partEntity.getId()).name(partEntity.getName()).build());
 
         var result = partService.save(part);
 
