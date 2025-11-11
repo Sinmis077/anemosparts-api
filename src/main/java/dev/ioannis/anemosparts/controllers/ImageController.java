@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.naming.ServiceUnavailableException;
 import java.io.IOException;
 import java.util.UUID;
 
@@ -28,10 +29,15 @@ public class ImageController {
         }
 
         try {
-            return ResponseEntity.ok(new ImageResourceURLResponse(imageService.saveImage(image, UUID.randomUUID().toString())));
+            return ResponseEntity.ok(new ImageResourceURLResponse(imageService.saveImage(image)));
         }
-        catch (IOException e)
+        catch (Exception e)
         {
+            if(e instanceof ServiceUnavailableException)
+                return  new ResponseEntity<>(HttpStatus.SERVICE_UNAVAILABLE);
+            if(e instanceof IOException)
+                return  new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
