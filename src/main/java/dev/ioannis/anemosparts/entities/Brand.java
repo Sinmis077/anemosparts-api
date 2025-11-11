@@ -24,6 +24,5 @@ public class Brand {
     private String iconUrl;
 
     @OneToMany(mappedBy = "brand")
-    @JsonManagedReference
     private List<Model> models;
 }

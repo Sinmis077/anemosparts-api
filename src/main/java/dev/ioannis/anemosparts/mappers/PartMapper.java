@@ -32,7 +32,13 @@ public class PartMapper {
         partDto.setPartNumber(entity.getPartNumber());
         partDto.setPrice(entity.getPrice());
         partDto.setQuantity(entity.getQuantity());
-        partDto.setOemNumber(entity.getOemNumber().getNumber());
+
+        if(entity.getOemNumber() != null) {
+            partDto.setOemNumber(entity.getOemNumber().getNumber());
+        }
+        else {
+            partDto.setOemNumber(null);
+        }
 
         partDto.setImages(imageMapper.toDtos(entity.getImages()));
 
@@ -50,7 +56,12 @@ public class PartMapper {
         part.setPrice(dto.getPrice());
         part.setQuantity(dto.getQuantity());
 
-        part.setOemNumber(oemRepo.findByNumber(dto.getOemNumber()));
+        if(dto.getOemNumber() != null) {
+            part.setOemNumber(oemRepo.findByNumber(dto.getOemNumber()));
+        } else
+        {
+            part.setOemNumber(null);
+        }
 
         part.setImages(imageMapper.toEntities(dto.getImages()));
 
@@ -77,7 +88,7 @@ public class PartMapper {
                     part.getId(),
                     part.getName(),
                     part.getDescription(),
-                    part.getOemNumber().getNumber(),
+                    part.getOemNumber() != null ? part.getOemNumber().getNumber() : null,
                     part.getPartNumber(),
                     part.getPrice(),
                     thumbnail.map(PartImage::getSource),
