@@ -1,8 +1,7 @@
 package dev.ioannis.anemosparts.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import dev.ioannis.anemosparts.enums.AddressType;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,6 +16,12 @@ import lombok.NoArgsConstructor;
 public class Address {
     @Id
     private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "userUuid", referencedColumnName = "uuid")
+    private User user;
+
+    private AddressType type;
 
     private String extras;
     private String houseNumber;

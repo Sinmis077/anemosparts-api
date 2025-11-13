@@ -1,6 +1,5 @@
 package dev.ioannis.anemosparts.entities;
 
-import dev.ioannis.anemosparts.enums.UserDefaults;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,7 +7,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -31,6 +29,6 @@ public class User {
 
     private LocalDate birthday;
 
+    @OneToMany(mappedBy = "user")
     private List<Address> addresses;
-    private List<BankCard> bankCards;
 }
