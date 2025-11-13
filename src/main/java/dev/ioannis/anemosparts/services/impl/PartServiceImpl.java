@@ -6,7 +6,6 @@ import dev.ioannis.anemosparts.domain.responses.PartFindAllResponse;
 import dev.ioannis.anemosparts.entities.Model;
 import dev.ioannis.anemosparts.entities.Part;
 import dev.ioannis.anemosparts.exceptions.EntityModelsNotFoundException;
-import dev.ioannis.anemosparts.exceptions.OemNumberDoesNotExistException;
 import dev.ioannis.anemosparts.mappers.PartMapper;
 import dev.ioannis.anemosparts.repositories.ModelRepo;
 import dev.ioannis.anemosparts.repositories.OemRepo;
@@ -66,7 +65,7 @@ public class PartServiceImpl implements PartService {
             if(oemRepo.existsByNumber(part.getOemNumber().getNumber()))
                 part.setOemNumber(oemRepo.findByNumber(part.getOemNumber().getNumber()));
 
-            else throw new OemNumberDoesNotExistException("");
+            else throw new IllegalArgumentException("");
         }
 
 
