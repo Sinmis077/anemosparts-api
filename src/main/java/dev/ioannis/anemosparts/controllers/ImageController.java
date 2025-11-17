@@ -10,11 +10,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.naming.ServiceUnavailableException;
 import java.io.IOException;
-import java.util.UUID;
 
 @RestController
 @AllArgsConstructor
@@ -23,22 +22,16 @@ public class ImageController {
     private final ImageService imageService;
 
     @PostMapping()
-    public ResponseEntity<ImageResourceURLResponse> addImage(@Image @NotNull MultipartFile image) {
+    public ResponseEntity<ImageResourceURLResponse> addImage(@Image @NotNull MultipartFile image) throws IOException {
         if(image.getSize() == 100) {
-            return new ResponseEntity<>(HttpStatus.BANDWIDTH_LIMIT_EXCEEDED);
+            throw new HttpClientErrorException(HttpStatus.BANDWIDTH_LIMIT_EXCEEDED);
         }
 
-        try {
-            return ResponseEntity.ok(new ImageResourceURLResponse(imageService.saveImage(image)));
-        }
-        catch (Exception e)
-        {
-            if(e instanceof ServiceUnavailableException)
-                return  new ResponseEntity<>(HttpStatus.SERVICE_UNAVAILABLE);
-            if(e instanceof IOException)
-                return  new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        var imageUrl = imageService.save(image.getInputStream(),
+                                         image.getOriginalFilename(),
+                                         image.getContentType(),
+                                         image.getBytes());
 
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+        return ResponseEntity.ok(new ImageResourceURLResponse(imageUrl));
     }
 }

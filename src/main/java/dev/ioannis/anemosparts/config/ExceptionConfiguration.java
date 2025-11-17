@@ -8,9 +8,10 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.server.PayloadTooLargeException;
 
 import javax.naming.ServiceUnavailableException;
+import java.io.IOException;
 
 @RestControllerAdvice
-public class ExceptionHandlerConfiguration {
+public class ExceptionConfiguration {
     @ExceptionHandler(HttpClientErrorException.BadRequest.class)
     public ResponseEntity<ErrorResponse> handleIllegalArgumentException(HttpClientErrorException.BadRequest ex) {
         return ResponseEntity.status(HttpStatus.FAILED_DEPENDENCY).body(new ErrorResponse(ex.getMessage()));
@@ -37,6 +38,12 @@ public class ExceptionHandlerConfiguration {
     @ExceptionHandler(HttpClientErrorException.Conflict.class)
     public ResponseEntity<ErrorResponse> handleHttpClientError(HttpClientErrorException.Conflict ex) {
         return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(new ErrorResponse(ex.getMessage()));
+    }
+
+    @ExceptionHandler(IOException.class)
+    public ResponseEntity<ErrorResponse> handleIOException(IOException ex) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(new ErrorResponse(ex.getMessage()));
     }
 
