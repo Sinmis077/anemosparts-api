@@ -9,5 +9,4 @@ public class AnemospartsApplication {
     public static void main(String[] args) {
         SpringApplication.run(AnemospartsApplication.class, args);
     }
-
 }

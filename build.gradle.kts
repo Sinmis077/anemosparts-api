@@ -25,12 +25,28 @@ repositories {
 }
 
 dependencies {
+    // Implementation
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
-    compileOnly("org.projectlombok:lombok")
-    runtimeOnly("com.mysql:mysql-connector-j")
+    implementation("org.mapstruct:mapstruct:1.6.3")
+    implementation("org.apache.commons:commons-lang3:3.19.0")
+    implementation("org.apache.commons:commons-collections4:4.5.0")
+    implementation("commons-io:commons-io:2.20.0")
+    implementation("org.springframework.boot:spring-boot-starter-validation")
+    implementation("me.paulschwarz:spring-dotenv:4.0.0")
+
+    // Annotation Processors
     annotationProcessor("org.projectlombok:lombok")
+    annotationProcessor("org.mapstruct:mapstruct-processor:1.6.3")
+
+    // Compile Only
+    compileOnly("org.projectlombok:lombok")
+
+    // Runtime Only
+    runtimeOnly("com.mysql:mysql-connector-j")
+
+    // Tests Only
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }

@@ -1,0 +1,86 @@
+# Maven
+target/
+!target/*.jar
+!target/*.war
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+
+# Gradle
+.gradle/
+build/
+!build/libs/*.jar
+!build/libs/*.war
+gradle-app.setting
+!gradle-wrapper.jar
+.gradletasknamecache
+
+# IDE Files
+.idea/
+*.iml
+*.ipr
+*.iws
+.project
+.classpath
+.settings/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Logs
+*.log
+logs/
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+Jenkinsfile
+.travis.yml
+.circleci/
+
+# Documentation
+README.md
+README.txt
+CHANGELOG.md
+LICENSE
+docs/
+
+# Test files (if you don't need them in production)
+src/test/
+*.test.properties
+
+# Application properties (keep only what's needed)
+application-local.properties
+application-dev.properties
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Docker files themselves
+Dockerfile*
+docker-compose*.yml
+.dockerignore
+
+# Node modules (if you have frontend)
+node_modules/
+npm-debug.log
+
+# Other
+.env
+.env.local
+*.bak
