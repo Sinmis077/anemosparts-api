@@ -2,6 +2,7 @@ package dev.ioannis.anemosparts.services.impl;
 
 import dev.ioannis.anemosparts.domain.PartDto;
 import dev.ioannis.anemosparts.domain.requests.PartSaveRequest;
+import dev.ioannis.anemosparts.domain.responses.PartFindAllFullResponse;
 import dev.ioannis.anemosparts.domain.responses.PartFindAllResponse;
 import dev.ioannis.anemosparts.entities.Model;
 import dev.ioannis.anemosparts.entities.Part;
@@ -9,6 +10,7 @@ import dev.ioannis.anemosparts.exceptions.EntityModelsNotFoundException;
 import dev.ioannis.anemosparts.mappers.PartMapper;
 import dev.ioannis.anemosparts.repositories.ModelRepo;
 import dev.ioannis.anemosparts.repositories.OemRepo;
+import dev.ioannis.anemosparts.repositories.PartImageRepo;
 import dev.ioannis.anemosparts.repositories.PartRepo;
 import dev.ioannis.anemosparts.services.PartService;
 import jakarta.persistence.EntityNotFoundException;
@@ -24,6 +26,7 @@ public class PartServiceImpl implements PartService {
     private final PartRepo partRepo;
     private final ModelRepo modelRepo;
     private final OemRepo oemRepo;
+    private final PartImageRepo partImageRepo;
 
     private final PartMapper mapper;
 
@@ -31,6 +34,11 @@ public class PartServiceImpl implements PartService {
     @Transactional(readOnly = true)
     public PartFindAllResponse findAll() {
         return new PartFindAllResponse(mapper.toSummaries(partRepo.findAll()));
+    }
+
+    @Override
+    public PartFindAllFullResponse findAllFull() {
+        return new PartFindAllFullResponse(mapper.toDtos(partRepo.findAll()));
     }
 
     @Override
@@ -53,6 +61,10 @@ public class PartServiceImpl implements PartService {
         var part = mapper.toEntity(request);
         part.setId(id);
 
+        if(request.getOemNumber() != null) {
+            part.setOemNumber(oemRepo.findByNumber(request.getOemNumber()));
+        }
+
         return mapper.toDto(save(part));
     }
 
@@ -62,17 +74,27 @@ public class PartServiceImpl implements PartService {
         }
 
         if(part.getOemNumber() != null) {
-            if(oemRepo.existsByNumber(part.getOemNumber().getNumber()))
+            if(part.getOemNumber().getId() != null) {
                 part.setOemNumber(oemRepo.findByNumber(part.getOemNumber().getNumber()));
-
-            else throw new IllegalArgumentException("");
+            }
+            else {
+                oemRepo.save(part.getOemNumber());
+            }
         }
 
 
 
-//        part.setModels(modelRepo.findAllById(part.getModels().stream().map(Model::getId).toList()));
+        var dbPart = partRepo.save(part);
 
-        return partRepo.save(part);
+        if(!part.getImages().isEmpty()) {
+            for(var image : part.getImages()) {
+                image.setPart(dbPart);
+            }
+
+            partImageRepo.saveAll(part.getImages());
+        }
+
+        return dbPart;
     }
 
     @Override

@@ -41,6 +41,18 @@ public class ExceptionConfiguration {
                 .body(new ErrorResponse(ex.getMessage()));
     }
 
+    @ExceptionHandler(HttpClientErrorException.NotAcceptable.class)
+    public ResponseEntity<ErrorResponse> handleHttpClientNotAcceptable(HttpClientErrorException.NotAcceptable ex) {
+        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
+                .body(new ErrorResponse(ex.getMessage()));
+    }
+
+    @ExceptionHandler(HttpClientErrorException.TooManyRequests.class)
+    public ResponseEntity<ErrorResponse> handleTooManyRequests(HttpClientErrorException.TooManyRequests ex) {
+        return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
+                .body(new ErrorResponse(ex.getMessage()));
+    }
+
     @ExceptionHandler(IOException.class)
     public ResponseEntity<ErrorResponse> handleIOException(IOException ex) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

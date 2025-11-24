@@ -20,6 +20,7 @@ public class PartSummaryDto {
     private String oemNumber;
     private String partNumber;
     private Double price;
+    private Integer quantity;
     private Optional<String> thumbnailSrc;
 
     private List<Long> modelIds;

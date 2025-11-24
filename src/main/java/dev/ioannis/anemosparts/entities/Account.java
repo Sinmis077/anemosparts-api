@@ -11,12 +11,12 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Table(name = "User")
+@Table(name = "Account")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 @Builder
-public class User {
+public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private UUID uuid;
@@ -29,6 +29,6 @@ public class User {
 
     private LocalDate birthday;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "account")
     private List<Address> addresses;
 }
