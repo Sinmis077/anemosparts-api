@@ -2,6 +2,7 @@ package dev.ioannis.anemosparts.controllers;
 
 import dev.ioannis.anemosparts.domain.PartDto;
 import dev.ioannis.anemosparts.domain.requests.PartSaveRequest;
+import dev.ioannis.anemosparts.domain.responses.PartFindAllFullResponse;
 import dev.ioannis.anemosparts.domain.responses.PartFindAllResponse;
 import dev.ioannis.anemosparts.services.PartService;
 import jakarta.validation.Valid;
@@ -22,6 +23,11 @@ public class PartController {
     @GetMapping
     public ResponseEntity<PartFindAllResponse> findAll() {
         return ResponseEntity.ok(partService.findAll());
+    }
+
+    @GetMapping("full")
+    public ResponseEntity<PartFindAllFullResponse> findAllFull() {
+        return ResponseEntity.ok(partService.findAllFull());
     }
 
     @PostMapping

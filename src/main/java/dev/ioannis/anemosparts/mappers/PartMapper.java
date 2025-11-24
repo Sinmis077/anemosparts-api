@@ -91,6 +91,7 @@ public class PartMapper {
                     part.getOemNumber() != null ? part.getOemNumber().getNumber() : null,
                     part.getPartNumber(),
                     part.getPrice(),
+                    part.getQuantity(),
                     thumbnail.map(PartImage::getSource),
 
                     part.getModels().stream().map(Model::getId).toList()
@@ -118,6 +119,7 @@ public class PartMapper {
         part.setDescription(request.getDescription());
 
         part.setModels(request.getModelIds().stream().map(modelId -> Model.builder().id(modelId).build()).toList());
+        part.setImages(request.getImageUrls().stream().map(imageUrl -> PartImage.builder().source(imageUrl).build()).toList());
 
         return part;
     }

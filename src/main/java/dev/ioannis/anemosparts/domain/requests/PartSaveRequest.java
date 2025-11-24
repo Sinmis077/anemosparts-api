@@ -1,9 +1,6 @@
 package dev.ioannis.anemosparts.domain.requests;
 
-import jakarta.validation.constraints.DecimalMax;
-import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Range;
@@ -29,7 +26,8 @@ public class PartSaveRequest {
     @Range(min = 0, max = 100)
     private int quantity = 0;
 
-    private List<PartImageRequest> images;
+    @Size(min = 0, max = 10)
+    private List<String> imageUrls;
 
     @Size(min = 1, max = 20)
     private List<Long> modelIds;

@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -36,7 +37,7 @@ public class Part {
     private Integer quantity;
 
     @OneToMany(mappedBy = "part")
-    private List<PartImage> images;
+    private List<PartImage> images = new ArrayList<>();
 
     @ManyToMany
     @JoinTable(name = "part_model", joinColumns = @JoinColumn(name = "partId"), inverseJoinColumns = {@JoinColumn(name = "modelId", referencedColumnName = "id"),})

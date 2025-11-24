@@ -2,12 +2,15 @@ package dev.ioannis.anemosparts.services;
 
 import dev.ioannis.anemosparts.domain.PartDto;
 import dev.ioannis.anemosparts.domain.requests.PartSaveRequest;
+import dev.ioannis.anemosparts.domain.responses.PartFindAllFullResponse;
 import dev.ioannis.anemosparts.domain.responses.PartFindAllResponse;
 import org.springframework.stereotype.Service;
 
 @Service
 public interface PartService {
     PartFindAllResponse findAll();
+
+    PartFindAllFullResponse findAllFull();
 
     PartDto save(PartSaveRequest request);
 

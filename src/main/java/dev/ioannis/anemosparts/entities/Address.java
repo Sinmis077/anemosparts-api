@@ -18,8 +18,8 @@ public class Address {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "userUuid", referencedColumnName = "uuid")
-    private User user;
+    @JoinColumn(name = "accountUuid", referencedColumnName = "uuid")
+    private Account account;
 
     private AddressType type;
 
