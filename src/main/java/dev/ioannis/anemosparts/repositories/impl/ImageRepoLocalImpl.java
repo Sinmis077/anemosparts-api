@@ -26,6 +26,8 @@ public class ImageRepoLocalImpl implements ImageRepo {
             Files.createDirectories(uploadDir);
         }
         catch (IOException e){
+            // BAD HABIT: Using System.out.println instead of proper logging (SLF4J/Log4j)
+            // Should use a logger to log errors properly
             System.out.println("Could not create directory: " + uploadDir);
             System.out.println(e.getMessage());
         }

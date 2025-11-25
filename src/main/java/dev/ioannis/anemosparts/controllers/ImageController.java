@@ -48,6 +48,7 @@ public class ImageController {
         if(images.isEmpty()) throw new HttpClientErrorException(HttpStatus.NOT_ACCEPTABLE);
         if(images.size() > 10) throw new HttpClientErrorException(HttpStatus.BANDWIDTH_LIMIT_EXCEEDED);
 
+        // BAD HABIT: Variable name should be camelCase (imageUrls), not PascalCase (ImageUrls)
         List<String> ImageUrls = new ArrayList<>();
         for(var image : images) {
             if(image.getSize() > maxSize) {

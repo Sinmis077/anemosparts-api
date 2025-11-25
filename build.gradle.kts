@@ -14,6 +14,8 @@ java {
     }
 }
 
+val mockitoAgent = configurations.create("mockitoAgent")
+
 configurations {
     compileOnly {
         extendsFrom(configurations.annotationProcessor.get())
@@ -42,15 +44,23 @@ dependencies {
 
     // Compile Only
     compileOnly("org.projectlombok:lombok")
+    "developmentOnly"("org.springframework.boot:spring-boot-devtools")
 
     // Runtime Only
     runtimeOnly("com.mysql:mysql-connector-j")
 
     // Tests Only
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.mockito:mockito-core:5.20.0")
+    testRuntimeOnly("com.h2database:h2")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
+    mockitoAgent("org.mockito:mockito-core:5.20.0") { isTransitive = false }
 }
 
-tasks.withType<Test> {
-    useJUnitPlatform()
+tasks {
+    test {
+        useJUnitPlatform()
+        jvmArgs = listOf("-javaagent:${mockitoAgent.asPath}")
+    }
 }

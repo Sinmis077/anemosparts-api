@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Range;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -27,8 +28,8 @@ public class PartSaveRequest {
     private int quantity = 0;
 
     @Size(min = 0, max = 10)
-    private List<String> imageUrls;
+    private List<String> imageUrls = new ArrayList<>();
 
     @Size(min = 1, max = 20)
-    private List<Long> modelIds;
+    private List<Long> modelIds =  new ArrayList<>();
 }

@@ -70,7 +70,7 @@ public class PartServiceImpl implements PartService {
 
     protected Part save(Part part) {
         if(modelRepo.findAllById(part.getModels().stream().map(Model::getId).toList()).size() != part.getModels().size()) {
-            throw new EntityModelsNotFoundException("");
+            throw new EntityModelsNotFoundException("Some of the parts models don't exist anymore");
         }
 
         if(part.getOemNumber() != null) {
@@ -81,8 +81,6 @@ public class PartServiceImpl implements PartService {
                 oemRepo.save(part.getOemNumber());
             }
         }
-
-
 
         var dbPart = partRepo.save(part);
 
@@ -99,9 +97,10 @@ public class PartServiceImpl implements PartService {
 
     @Override
     public void delete(long id) {
-        if(partRepo.existsById(id)) {
-            partRepo.deleteById(id);
+        if(!partRepo.existsById(id)) {
+            throw new EntityNotFoundException("Could not find part with id: " + id + " to delete");
         }
-        else throw new EntityNotFoundException("Could not find part with id: " + id + " to delete");
+
+        partRepo.deleteById(id);
     }
 }

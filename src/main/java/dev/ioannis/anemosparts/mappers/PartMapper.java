@@ -40,8 +40,10 @@ public class PartMapper {
             partDto.setOemNumber(null);
         }
 
+        // BUG: Potential NPE if entity.getImages() is null
         partDto.setImages(imageMapper.toDtos(entity.getImages()));
 
+        // BUG: Potential NPE if entity.getModels() is null
         partDto.setModels(modelMapper.toDtos(entity.getModels()));
 
         return partDto;
@@ -82,6 +84,7 @@ public class PartMapper {
         var summaries = new ArrayList<PartSummaryDto>();
 
         for (Part part : parts) {
+            // BUG: Potential NPE if part.getImages() is null - should check for null first
             var thumbnail = part.getImages().stream().filter(PartImage::getThumbnail).findFirst();
 
             summaries.add(new PartSummaryDto(
@@ -93,7 +96,7 @@ public class PartMapper {
                     part.getPrice(),
                     part.getQuantity(),
                     thumbnail.map(PartImage::getSource),
-
+                    // BUG: Potential NPE if part.getModels() is null - should check for null first
                     part.getModels().stream().map(Model::getId).toList()
             ));
         }
@@ -119,6 +122,8 @@ public class PartMapper {
         part.setDescription(request.getDescription());
 
         part.setModels(request.getModelIds().stream().map(modelId -> Model.builder().id(modelId).build()).toList());
+        // BUG: Potential NPE if request.getImageUrls() is null (not required in PartSaveRequest validation)
+        // Should check for null first or initialize to empty list
         part.setImages(request.getImageUrls().stream().map(imageUrl -> PartImage.builder().source(imageUrl).build()).toList());
 
         return part;
