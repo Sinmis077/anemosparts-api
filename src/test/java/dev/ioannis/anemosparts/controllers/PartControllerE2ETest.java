@@ -150,28 +150,28 @@ class PartControllerE2ETest {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.oemNumber", nullValue()));
     }
-//
-//    @Test
-//    void update_returnsUpdatedPart_whenPartExists() throws Exception {
-//        String createResponse = mockMvc.perform(post("/api/parts")
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content("{\"name\":\"Brake Pads\",\"description\":\"High performance brake pads for ZX-10R\",\"partNumber\":\"BP-ZX10R-F\",\"price\":75.50,\"quantity\":10,\"modelIds\":[" + modelId + "]}"))
-//                .andExpect(status().isCreated())
-//                .andReturn()
-//                .getResponse()
-//                .getContentAsString();
-//
-//        Long partId = Long.parseLong(createResponse.split("\"id\":")[1].split(",")[0]);
-//
-//        mockMvc.perform(put("/api/parts/" + partId)
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content("{\"name\":\"Premium Brake Pads\",\"description\":\"Ultra high performance racing brake pads designed specifically for Kawasaki ZX-10R motorcycles\",\"partNumber\":\"BP-ZX10R-F-PRO\",\"price\":125.00,\"quantity\":5,\"modelIds\":[" + modelId + "]}"))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$.id", is(partId.intValue())))
-//                .andExpect(jsonPath("$.name", is("Premium Brake Pads")))
-//                .andExpect(jsonPath("$.price", is(125.00)))
-//                .andExpect(jsonPath("$.quantity", is(5)));
-//    }
+
+    @Test
+    void update_returnsUpdatedPart_whenPartExists() throws Exception {
+        String createResponse = mockMvc.perform(post("/api/parts")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"name\":\"Brake Pads\",\"description\":\"High performance brake pads for ZX-10R\",\"partNumber\":\"BP-ZX10R-F\",\"price\":75.50,\"quantity\":10,\"modelIds\":[" + modelId + "]}"))
+                .andExpect(status().isCreated())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        Long partId = Long.parseLong(createResponse.split("\"id\":")[1].split(",")[0]);
+
+        mockMvc.perform(put("/api/parts/" + partId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"name\":\"Premium Brake Pads\",\"description\":\"Ultra high performance racing brake pads designed specifically for Kawasaki ZX-10R motorcycles\",\"partNumber\":\"BP-ZX10R-F-PRO\",\"price\":125.00,\"quantity\":5,\"modelIds\":[" + modelId + "]}"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(partId.intValue())))
+                .andExpect(jsonPath("$.name", is("Premium Brake Pads")))
+                .andExpect(jsonPath("$.price", is(125.00)))
+                .andExpect(jsonPath("$.quantity", is(5)));
+    }
 
     @Test
     void delete_succeeds_whenPartExists() throws Exception {

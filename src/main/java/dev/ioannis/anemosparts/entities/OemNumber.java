@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -25,8 +26,10 @@ public class OemNumber {
 
     @ManyToMany
     @JoinTable(name = "oemnumber_model", joinColumns = @JoinColumn(name = "oem_number_id", referencedColumnName = "id"), inverseJoinColumns = {@JoinColumn(name = "modelid", referencedColumnName = "id"),})
-    private List<Model> models;
+    @Builder.Default
+    private List<Model> models =  new ArrayList<>();
 
     @OneToMany(mappedBy = "oemNumber")
-    private List<Part> parts;
+    @Builder.Default
+    private List<Part> parts = new ArrayList<>();
 }

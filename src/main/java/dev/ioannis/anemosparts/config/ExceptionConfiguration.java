@@ -77,14 +77,14 @@ public class ExceptionConfiguration {
 
 
     // Last resort / general catch-all
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleGeneralErrors(Exception ex) {
-        // BAD HABIT: Using System.err.println instead of proper logging (SLF4J/Log4j)
-        // Should use a logger to log errors with proper log levels and formatting
-        System.err.println("ERROR caused by: " + ex.getCause());
-        System.err.println(ex.getMessage());
-
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new ErrorResponse(ex.getMessage()));
-    }
+//    @ExceptionHandler(Exception.class)
+//    public ResponseEntity<ErrorResponse> handleGeneralErrors(Exception ex) {
+//        // BAD HABIT: Using System.err.println instead of proper logging (SLF4J/Log4j)
+//        // Should use a logger to log errors with proper log levels and formatting
+//        System.err.println("ERROR caused by: " + ex.getCause());
+//        System.err.println(ex.getMessage());
+//
+//        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+//                .body(new ErrorResponse(ex.getMessage()));
+//    }
 }
