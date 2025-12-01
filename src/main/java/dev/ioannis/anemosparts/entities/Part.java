@@ -37,9 +37,11 @@ public class Part {
     private Integer quantity;
 
     @OneToMany(mappedBy = "part")
+    @Builder.Default
     private List<PartImage> images = new ArrayList<>();
 
     @ManyToMany
     @JoinTable(name = "part_model", joinColumns = @JoinColumn(name = "partId"), inverseJoinColumns = {@JoinColumn(name = "modelId", referencedColumnName = "id"),})
-    private List<Model> models;
+    @Builder.Default
+    private List<Model> models =  new ArrayList<>();
 }

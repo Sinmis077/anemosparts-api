@@ -11,6 +11,7 @@ import dev.ioannis.anemosparts.repositories.OemRepo;
 import dev.ioannis.anemosparts.repositories.PartRepo;
 import dev.ioannis.anemosparts.services.impl.PartServiceImpl;
 import jakarta.persistence.EntityNotFoundException;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -38,94 +39,114 @@ class PartServiceImplTest {
     @InjectMocks
     private PartServiceImpl partService;
 
+    private PartSaveRequest request;
+    private Part part;
+    private PartDto partDto;
+
+    @BeforeEach
+    void setUp() {
+        request = new PartSaveRequest();
+        request.setName("Gearbox");
+        request.setModelIds(List.of(1L, 2L));
+
+        part = new Part();
+        part.setId(1L);
+        part.setName("Gearbox");
+        part.setModels(List.of(Model.builder().id(1L).build(), Model.builder().id(2L).build()));
+
+        partDto = PartDto.builder()
+                .id(1L)
+                .name("Gearbox")
+                .build();
+    }
+
     @Test
-    void findAll_found_nothing() {
+    void findAll_returnsEmptyList_whenNoPartsExist() {
         when(partRepo.findAll()).thenReturn(List.of());
 
         var result = partService.findAll();
 
-        assertNotNull(result);
         assertTrue(result.parts().isEmpty());
-        verify(partRepo, times(1)).findAll();
+        verify(partRepo).findAll();
     }
 
     @Test
-    void findAll_found_something() {
-        var partEntity = new Part();
-        partEntity.setId(1L);
-        partEntity.setName("Gearbox");
+    void findAll_returnsParts_whenPartsExist() {
+        PartSummaryDto dto = new PartSummaryDto();
+        dto.setId(1L);
 
-        var partDto = new PartSummaryDto();
-        partDto.setId(partEntity.getId());
-        partDto.setName(partEntity.getName());
-
-        when(partRepo.findAll()).thenReturn(List.of(partEntity));
-        when(partMapper.toSummaries(any(List.class))).thenReturn(List.of(partDto));
+        when(partRepo.findAll()).thenReturn(List.of(part));
+        when(partMapper.toSummaries(List.of(part))).thenReturn(List.of(dto));
 
         var result = partService.findAll();
 
-        assertNotNull(result);
-        assertFalse(result.parts().isEmpty());
         assertEquals(1, result.parts().size());
-        verify(partRepo, times(1)).findAll();
+        verify(partRepo).findAll();
     }
 
     @Test
-    void save_missing_modelIds() {
-        var part = new PartSaveRequest();
-        part.setName("Gearbox");
+    void findAllFull_returnsEmptyList_whenNoPartsExist() {
+        when(partRepo.findAll()).thenReturn(List.of());
 
-        assertThrows(IllegalArgumentException.class, () -> partService.save(part));
+        var result = partService.findAllFull();
 
-        verify(partRepo, times(0)).save(any(Part.class));
+        assertTrue(result.parts().isEmpty());
+        verify(partRepo).findAll();
     }
 
     @Test
-    void save() {
-        var part = new PartSaveRequest();
-        part.setName("Gearbox");
-        part.setModelIds(List.of(1L, 2L));
+    void findAllFull_returnsParts_whenPartsExist() {
+        when(partRepo.findAll()).thenReturn(List.of(part));
+        when(partMapper.toDtos(List.of(part))).thenReturn(List.of(partDto));
 
-        var partEntity = new Part();
-        partEntity.setId(1L);
-        partEntity.setName("Gearbox");
-        partEntity.setModels(List.of(Model.builder().id(1L).build(), Model.builder().id(2L).build()));
+        var result = partService.findAllFull();
 
-        when(partRepo.save(any(Part.class))).thenReturn(partEntity);
-        when(partMapper.toEntity(any(PartSaveRequest.class))).thenReturn(partEntity);
-        when(modelRepo.findAllById(any(List.class))).thenReturn(List.of(new Model(), new Model()));
-        when(partMapper.toDto(any(Part.class))).thenReturn(PartDto.builder().id(partEntity.getId()).name(partEntity.getName()).build());
-
-        var result = partService.save(part);
-
-        assertNotNull(result);
-        assertEquals(part.getName(), result.getName());
-        verify(partRepo, times(1)).save(any(Part.class));
+        assertEquals(1, result.parts().size());
+        verify(partRepo).findAll();
     }
 
     @Test
-    void delete_success() {
-        var part = new PartDto();
-        part.setId(1L);
-        part.setName("Gearbox");
+    void save_throwsException_whenModelIdsAreNull() {
+        request.setModelIds(null);
 
-        when(partRepo.existsById(any(Long.class))).thenReturn(true);
-        doNothing().when(partRepo).deleteById(any(Long.class));
-
-        assertDoesNotThrow(() -> partService.delete(part.getId()));
-
-        verify(partRepo, times(1)).deleteById(any(Long.class));
+        assertThrows(IllegalArgumentException.class, () -> partService.save(request));
+        verify(partRepo, never()).save(any());
     }
 
     @Test
-    void delete_throwsException() {
-        var part = new PartDto();
-        part.setId(1L);
-        part.setName("Gearbox");
+    void save_throwsException_whenModelIdsAreEmpty() {
+        request.setModelIds(List.of());
 
-        when(partRepo.existsById(any(Long.class))).thenReturn(false);
+        assertThrows(IllegalArgumentException.class, () -> partService.save(request));
+        verify(partRepo, never()).save(any());
+    }
 
-        assertThrows(EntityNotFoundException.class, () -> partService.delete(part.getId()));
-        verify(partRepo, times(0)).deleteById(any(Long.class));
+    @Test
+    void save_returnsSavedPart_whenValidRequest() {
+        when(partMapper.toEntity(request)).thenReturn(part);
+        when(modelRepo.findAllById(List.of(1L, 2L))).thenReturn(List.of(new Model(), new Model()));
+        when(partRepo.save(part)).thenReturn(part);
+        when(partMapper.toDto(part)).thenReturn(partDto);
+
+        var result = partService.save(request);
+
+        assertEquals("Gearbox", result.getName());
+        verify(partRepo).save(any());
+    }
+
+    @Test
+    void delete_succeeds_whenPartExists() {
+        when(partRepo.existsById(1L)).thenReturn(true);
+
+        assertDoesNotThrow(() -> partService.delete(1L));
+        verify(partRepo).deleteById(1L);
+    }
+
+    @Test
+    void delete_throwsException_whenPartDoesNotExist() {
+        when(partRepo.existsById(1L)).thenReturn(false);
+
+        assertThrows(EntityNotFoundException.class, () -> partService.delete(1L));
+        verify(partRepo, never()).deleteById(any());
     }
 }

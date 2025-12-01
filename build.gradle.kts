@@ -2,6 +2,7 @@ plugins {
     java
     id("org.springframework.boot") version "3.5.5"
     id("io.spring.dependency-management") version "1.1.7"
+    id("org.sonarqube") version "7.0.1.6134"
 }
 
 group = "dev.ioannis"
@@ -13,6 +14,8 @@ java {
         languageVersion = JavaLanguageVersion.of(21)
     }
 }
+
+val mockitoAgent = configurations.create("mockitoAgent")
 
 configurations {
     compileOnly {
@@ -42,15 +45,30 @@ dependencies {
 
     // Compile Only
     compileOnly("org.projectlombok:lombok")
+    "developmentOnly"("org.springframework.boot:spring-boot-devtools")
 
     // Runtime Only
     runtimeOnly("com.mysql:mysql-connector-j")
 
     // Tests Only
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.mockito:mockito-core:5.20.0")
+    testRuntimeOnly("com.h2database:h2")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
+    mockitoAgent("org.mockito:mockito-core:5.20.0") { isTransitive = false }
 }
 
-tasks.withType<Test> {
-    useJUnitPlatform()
+tasks {
+    test {
+        useJUnitPlatform()
+        jvmArgs = listOf("-javaagent:${mockitoAgent.asPath}")
+    }
+}
+
+sonar {
+    properties {
+        property("sonar.projectKey", "Sinmis077_anemosparts-api_1b92c5a9-19ac-4bc8-abc4-67d7495c34ef")
+        property("sonar.projectName", "anemosparts-api")
+    }
 }

@@ -7,7 +7,6 @@ import dev.ioannis.anemosparts.entities.Model;
 import dev.ioannis.anemosparts.entities.OemNumber;
 import dev.ioannis.anemosparts.entities.Part;
 import dev.ioannis.anemosparts.entities.PartImage;
-import dev.ioannis.anemosparts.repositories.ModelRepo;
 import dev.ioannis.anemosparts.repositories.OemRepo;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -15,6 +14,7 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Component
 @AllArgsConstructor
@@ -82,7 +82,14 @@ public class PartMapper {
         var summaries = new ArrayList<PartSummaryDto>();
 
         for (Part part : parts) {
-            var thumbnail = part.getImages().stream().filter(PartImage::getThumbnail).findFirst();
+            PartImage thumbnail = null;
+            if(!part.getImages().isEmpty()) {
+                try{
+                    if(part.getImages().stream().anyMatch(PartImage::getThumbnail)) {
+                        thumbnail = part.getImages().stream().filter(PartImage::getThumbnail).findFirst().get();
+                    }
+                } catch (NullPointerException ignored) {}
+            }
 
             summaries.add(new PartSummaryDto(
                     part.getId(),
@@ -92,8 +99,7 @@ public class PartMapper {
                     part.getPartNumber(),
                     part.getPrice(),
                     part.getQuantity(),
-                    thumbnail.map(PartImage::getSource),
-
+                    Optional.ofNullable(thumbnail != null ? thumbnail.getSource() : ""),
                     part.getModels().stream().map(Model::getId).toList()
             ));
         }
@@ -109,7 +115,9 @@ public class PartMapper {
         // OEM number can be null this is not a mistake.
         if(request.getOemNumber() != null) {
             if (!request.getOemNumber().isBlank()) {
-                part.setOemNumber(OemNumber.builder().number(request.getOemNumber()).build());
+                var oemNumber = new OemNumber();
+                oemNumber.setNumber(request.getOemNumber());
+                part.setOemNumber(oemNumber);
             }
         }
         else part.setOemNumber(null);
@@ -118,8 +126,8 @@ public class PartMapper {
         part.setQuantity(request.getQuantity());
         part.setDescription(request.getDescription());
 
-        part.setModels(request.getModelIds().stream().map(modelId -> Model.builder().id(modelId).build()).toList());
-        part.setImages(request.getImageUrls().stream().map(imageUrl -> PartImage.builder().source(imageUrl).build()).toList());
+        part.setModels(request.getModelIds().stream().map(modelId -> Model.builder().id(modelId).build()).collect(Collectors.toList()));
+        part.setImages(request.getImageUrls().stream().map(imageUrl -> PartImage.builder().source(imageUrl).build()).collect(Collectors.toList()));
 
         return part;
     }

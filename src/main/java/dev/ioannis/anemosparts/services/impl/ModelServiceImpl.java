@@ -15,8 +15,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 @Service
 @AllArgsConstructor
 @Transactional
@@ -34,6 +32,8 @@ public class ModelServiceImpl implements ModelService {
 
     @Override
     public ModelDto save(ModelSaveRequest request) {
+        // BUG: This bypasses the protected save(Model) method's brand validation
+        // Should call save(model) instead of modelRepo.save(model) for consistency
         var brand = new Brand();
         brand.setId(request.getBrandId());
 
@@ -42,7 +42,7 @@ public class ModelServiceImpl implements ModelService {
         model.setProductionYear(request.getProductionYear());
         model.setBrand(brand);
 
-        return mapper.toDto(modelRepo.save(model));
+        return mapper.toDto(save(model));
     }
 
     @Override
@@ -60,8 +60,9 @@ public class ModelServiceImpl implements ModelService {
     }
 
     protected Model save(Model model) {
+        // BAD HABIT: Empty error message in exception - should provide meaningful message
         if(model.getBrand() == null || model.getBrand().getId() == null) {
-            throw new NullBrandException("");
+            throw new NullBrandException("Brand should not be null");
         }
 
         var brand = brandRepo.findById(model.getBrand().getId()).orElseThrow(() -> new EntityNotFoundException("Brand with id " + model.getBrand().getId() + " not found"));
@@ -73,6 +74,10 @@ public class ModelServiceImpl implements ModelService {
 
     @Override
     public void delete(Long id) {
+        if(!modelRepo.existsById(id)) {
+            throw new EntityNotFoundException("Model with id " + id + " does not exist");
+        }
+
         modelRepo.deleteById(id);
     }
 }

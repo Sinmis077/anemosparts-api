@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -29,8 +30,10 @@ public class Model {
     private Brand brand;
 
     @ManyToMany(mappedBy = "models")
-    private List<Part> parts;
+    @Builder.Default
+    private List<Part> parts = new ArrayList<>();
 
     @ManyToMany(mappedBy = "models")
-    private List<OemNumber> oemNumbers;
+    @Builder.Default
+    private List<OemNumber> oemNumbers = new ArrayList<>();
 }

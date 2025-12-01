@@ -1,11 +1,9 @@
-name: Test operator
+name: Run build, test jobs
 
 on:
-    push:
-      branches: [ "**" ]
-    pull_request:
-      branches: [ "main" ]
-
+  push:
+    branches-ignore:
+      - main
 jobs:
   Build:
     runs-on: ubuntu-latest
@@ -20,6 +18,13 @@ jobs:
           distribution: "oracle"
           java-version: 21
 
+      - name: Cache Gradle packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
+          restore-keys: ${{ runner.os }}-gradle
+
       - name: Gradle setup
         uses: gradle/actions/setup-gradle@v4
 
@@ -31,7 +36,6 @@ jobs:
 
   Test:
     needs: Build
-
     runs-on: ubuntu-latest
 
     steps:
