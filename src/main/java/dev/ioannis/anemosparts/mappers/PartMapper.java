@@ -7,7 +7,6 @@ import dev.ioannis.anemosparts.entities.Model;
 import dev.ioannis.anemosparts.entities.OemNumber;
 import dev.ioannis.anemosparts.entities.Part;
 import dev.ioannis.anemosparts.entities.PartImage;
-import dev.ioannis.anemosparts.repositories.ModelRepo;
 import dev.ioannis.anemosparts.repositories.OemRepo;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -90,7 +89,7 @@ public class PartMapper {
                         thumbnail = part.getImages().stream().filter(PartImage::getThumbnail).findFirst().get();
                     }
                 } catch (NullPointerException ignored) {}
-            };
+            }
 
             summaries.add(new PartSummaryDto(
                     part.getId(),

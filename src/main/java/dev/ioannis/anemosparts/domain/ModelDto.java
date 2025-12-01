@@ -9,8 +9,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Objects;
-
 @Builder
 @Data
 @AllArgsConstructor
@@ -25,16 +23,6 @@ public class ModelDto {
     private Integer productionYear;
     @NotNull
     private BrandDto brand;
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-
-        if (o == null || getClass() != o.getClass()) return false;
-        ModelDto modelDto = (ModelDto) o;
-
-        return Objects.equals(name, modelDto.name) && Objects.equals(productionYear, modelDto.productionYear) && Objects.equals(brand, modelDto.brand);
-    }
 
     @Override
     public String toString() {

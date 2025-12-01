@@ -11,11 +11,13 @@ public class ImagesValidator implements ConstraintValidator<Images, List<Multipa
     @Override
     public boolean isValid(List<MultipartFile> files, ConstraintValidatorContext context) {
         for (MultipartFile file : files) {
-            // BAD HABIT: Redundant null check - "file.getContentType() != null &&" is unnecessary after already checking "== null"
-            // Should simplify to: if(file.getContentType() == null || !file.getContentType().startsWith("image/"))
-            if(file.getContentType() == null || (file.getContentType() != null && !file.getContentType().startsWith("image/"))) return false;
+            try {
+                return file.getContentType().startsWith("image/");
+            } catch (NullPointerException ignored) {
+                return false;
+            }
         }
 
-        return true;
+        return false;
     }
 }

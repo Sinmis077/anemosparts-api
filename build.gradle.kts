@@ -2,6 +2,7 @@ plugins {
     java
     id("org.springframework.boot") version "3.5.5"
     id("io.spring.dependency-management") version "1.1.7"
+    id("org.sonarqube") version "7.0.1.6134"
 }
 
 group = "dev.ioannis"
@@ -62,5 +63,12 @@ tasks {
     test {
         useJUnitPlatform()
         jvmArgs = listOf("-javaagent:${mockitoAgent.asPath}")
+    }
+}
+
+sonar {
+    properties {
+        property("sonar.projectKey", "Sinmis077_anemosparts-api_1b92c5a9-19ac-4bc8-abc4-67d7495c34ef")
+        property("sonar.projectName", "anemosparts-api")
     }
 }

@@ -2,7 +2,6 @@ package dev.ioannis.anemosparts.services.impl;
 
 import dev.ioannis.anemosparts.services.SecurityService;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;

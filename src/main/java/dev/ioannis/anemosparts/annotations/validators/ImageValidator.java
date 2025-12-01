@@ -8,6 +8,10 @@ import org.springframework.web.multipart.MultipartFile;
 public class ImageValidator implements ConstraintValidator<Image, MultipartFile> {
     @Override
     public boolean isValid(MultipartFile file, ConstraintValidatorContext context) {
-        return file.getContentType() != null && file.getContentType().startsWith("image/");
+        try {
+            return file.getContentType().startsWith("image/");
+        } catch (NullPointerException ignored) {
+            return false;
+        }
     }
 }
