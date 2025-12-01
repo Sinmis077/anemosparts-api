@@ -22,7 +22,7 @@ public class PartImage {
     private String source;
 
     @ColumnDefault("false")
-    private Boolean thumbnail;
+    private Boolean thumbnail = false;
 
     @ManyToOne
     @JoinColumn(name = "part_id", referencedColumnName = "id")
