@@ -48,8 +48,7 @@ public class ImageController {
         if(images.isEmpty()) throw new HttpClientErrorException(HttpStatus.NOT_ACCEPTABLE);
         if(images.size() > 10) throw new HttpClientErrorException(HttpStatus.BANDWIDTH_LIMIT_EXCEEDED);
 
-        // BAD HABIT: Variable name should be camelCase (imageUrls), not PascalCase (ImageUrls)
-        List<String> ImageUrls = new ArrayList<>();
+        List<String> imageUrls = new ArrayList<>();
         for(var image : images) {
             if(image.getSize() > maxSize) {
                 throw new HttpClientErrorException(HttpStatus.BANDWIDTH_LIMIT_EXCEEDED);
@@ -60,9 +59,9 @@ public class ImageController {
                     image.getContentType(),
                     image.getBytes());
 
-            ImageUrls.add(imageUrl);
+            imageUrls.add(imageUrl);
         }
 
-        return ResponseEntity.ok(new ImageResourceURLSResponse(ImageUrls));
+        return ResponseEntity.ok(new ImageResourceURLSResponse(imageUrls));
     }
 }

@@ -83,7 +83,14 @@ public class PartMapper {
         var summaries = new ArrayList<PartSummaryDto>();
 
         for (Part part : parts) {
-            var thumbnail = part.getImages().stream().filter(PartImage::getThumbnail).findFirst();
+            PartImage thumbnail = null;
+            if(!part.getImages().isEmpty()) {
+                try{
+                    if(part.getImages().stream().anyMatch(PartImage::getThumbnail)) {
+                        thumbnail = part.getImages().stream().filter(PartImage::getThumbnail).findFirst().get();
+                    }
+                } catch (NullPointerException ignored) {}
+            };
 
             summaries.add(new PartSummaryDto(
                     part.getId(),
@@ -93,7 +100,7 @@ public class PartMapper {
                     part.getPartNumber(),
                     part.getPrice(),
                     part.getQuantity(),
-                    thumbnail.map(PartImage::getSource),
+                    Optional.ofNullable(thumbnail != null ? thumbnail.getSource() : ""),
                     part.getModels().stream().map(Model::getId).toList()
             ));
         }
