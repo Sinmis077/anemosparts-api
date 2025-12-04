@@ -100,6 +100,7 @@ public class PartMapper {
                     part.getPrice(),
                     part.getQuantity(),
                     Optional.ofNullable(thumbnail != null ? thumbnail.getSource() : ""),
+                    Optional.ofNullable(part.getModels().getFirst().getBrand().getIconUrl()),
                     part.getModels().stream().map(Model::getId).toList()
             ));
         }
