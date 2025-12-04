@@ -12,4 +12,5 @@ import lombok.NoArgsConstructor;
 public class PartImageDto {
     private String id;
     private String source;
+    private Boolean isThumbnail = false;
 }

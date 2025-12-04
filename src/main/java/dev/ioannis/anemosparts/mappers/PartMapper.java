@@ -85,8 +85,9 @@ public class PartMapper {
             PartImage thumbnail = null;
             if(!part.getImages().isEmpty()) {
                 try{
-                    if(part.getImages().stream().anyMatch(PartImage::getThumbnail)) {
-                        thumbnail = part.getImages().stream().filter(PartImage::getThumbnail).findFirst().get();
+                    if(part.getImages().stream().anyMatch(PartImage::getIsThumbnail)) {
+                        //noinspection OptionalGetWithoutIsPresent
+                        thumbnail = part.getImages().stream().filter(PartImage::getIsThumbnail).findFirst().get();
                     }
                 } catch (NullPointerException ignored) {}
             }
@@ -128,7 +129,7 @@ public class PartMapper {
         part.setDescription(request.getDescription());
 
         part.setModels(request.getModelIds().stream().map(modelId -> Model.builder().id(modelId).build()).collect(Collectors.toList()));
-        part.setImages(request.getImageUrls().stream().map(imageUrl -> PartImage.builder().source(imageUrl).build()).collect(Collectors.toList()));
+        part.setImages(imageMapper.toEntitiesFromRequest(request.getImages()));
 
         return part;
     }

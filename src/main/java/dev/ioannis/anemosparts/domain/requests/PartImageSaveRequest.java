@@ -10,15 +10,13 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PartImageRequest {
+public class PartImageSaveRequest {
     @NotNull
-    private Long id = 0L;
+    private Long id;
 
     @NotNull
     private String source;
 
     @NotNull
-    private Boolean isMain = false;
-
-    private Long partId = 0L;
+    private Boolean isThumbnail = false;
 }
