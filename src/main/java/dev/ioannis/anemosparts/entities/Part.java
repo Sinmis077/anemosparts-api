@@ -36,7 +36,7 @@ public class Part {
     @Column(nullable = false)
     private Integer quantity;
 
-    @OneToMany(mappedBy = "part")
+    @OneToMany(fetch =FetchType.EAGER, orphanRemoval = true, mappedBy = "part")
     @Builder.Default
     private List<PartImage> images = new ArrayList<>();
 

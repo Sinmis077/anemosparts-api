@@ -22,7 +22,6 @@ public class PartMapper {
 
     private ModelMapper modelMapper;
     private PartImageMapper imageMapper;
-    private OemRepo oemRepo;
 
     public PartDto toDto(Part entity) {
         var partDto = new PartDto();
@@ -56,12 +55,7 @@ public class PartMapper {
         part.setPrice(dto.getPrice());
         part.setQuantity(dto.getQuantity());
 
-        if(dto.getOemNumber() != null) {
-            part.setOemNumber(oemRepo.findByNumber(dto.getOemNumber()));
-        } else
-        {
-            part.setOemNumber(null);
-        }
+        part.setOemNumber(OemNumber.builder().number(dto.getOemNumber()).build());
 
         part.setImages(imageMapper.toEntities(dto.getImages()));
 
@@ -79,20 +73,14 @@ public class PartMapper {
     }
 
     public List<PartSummaryDto> toSummaries(List<Part> parts) {
-        var summaries = new ArrayList<PartSummaryDto>();
+        return parts.stream().map(part -> {
+            String thumbnailSrc = part.getImages().stream()
+                    .filter(PartImage::getIsThumbnail)
+                    .findFirst()
+                    .map(PartImage::getSource)
+                    .orElse(null);
 
-        for (Part part : parts) {
-            PartImage thumbnail = null;
-            if(!part.getImages().isEmpty()) {
-                try{
-                    if(part.getImages().stream().anyMatch(PartImage::getIsThumbnail)) {
-                        //noinspection OptionalGetWithoutIsPresent
-                        thumbnail = part.getImages().stream().filter(PartImage::getIsThumbnail).findFirst().get();
-                    }
-                } catch (NullPointerException ignored) {}
-            }
-
-            summaries.add(new PartSummaryDto(
+            return new PartSummaryDto(
                     part.getId(),
                     part.getName(),
                     part.getDescription(),
@@ -100,13 +88,11 @@ public class PartMapper {
                     part.getPartNumber(),
                     part.getPrice(),
                     part.getQuantity(),
-                    Optional.ofNullable(thumbnail != null ? thumbnail.getSource() : ""),
-                    Optional.ofNullable(part.getModels().getFirst().getBrand().getIconUrl()),
+                    Optional.ofNullable(thumbnailSrc),
+                    part.getModels().getFirst().getBrand().getIconUrl(),
                     part.getModels().stream().map(Model::getId).toList()
-            ));
-        }
-
-        return summaries;
+            );
+        }).toList();
     }
 
     public Part toEntity(PartSaveRequest request) {

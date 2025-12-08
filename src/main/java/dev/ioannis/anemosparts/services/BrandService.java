@@ -8,9 +8,9 @@ import org.springframework.web.client.HttpClientErrorException;
 public interface BrandService {
     BrandFindAllResponse findAll();
 
-    BrandDto save(BrandSaveRequest request) throws HttpClientErrorException.Conflict;
+    BrandDto save(BrandSaveRequest request);
 
-    BrandDto update(Long id, BrandSaveRequest request) throws HttpClientErrorException.Conflict;
+    BrandDto update(Long id, BrandSaveRequest request);
 
-    void delete(Long id) throws HttpClientErrorException.NotFound;
+    void delete(Long id);
 }

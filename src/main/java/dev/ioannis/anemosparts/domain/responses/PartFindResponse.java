@@ -2,6 +2,5 @@ package dev.ioannis.anemosparts.domain.responses;
 
 import dev.ioannis.anemosparts.domain.PartDto;
 
-import java.util.List;
-
-public record PartFindAllResponse(List<PartDto> parts) {}
+public record PartFindResponse(PartDto part) {
+}
