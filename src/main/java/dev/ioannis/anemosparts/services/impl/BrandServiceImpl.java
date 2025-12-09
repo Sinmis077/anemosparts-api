@@ -9,9 +9,11 @@ import dev.ioannis.anemosparts.repositories.BrandRepo;
 import dev.ioannis.anemosparts.services.BrandService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @AllArgsConstructor
 @Transactional
@@ -45,15 +47,23 @@ public class BrandServiceImpl implements BrandService {
     }
 
     protected Brand save(Brand brand) {
-        return brandRepo.save(brand);
+        log.info("Saving brand: {}", brand);
+
+        var dbBrand = brandRepo.save(brand);
+
+        log.info("Saved brand with id: {}", dbBrand.getId());
+        return dbBrand;
     }
 
     @Override
     public void delete(Long id) {
+        log.info("Deleting brand with id: {}", id);
+
         if(!brandRepo.existsById(id)) {
             throw new EntityNotFoundException("Brand with id " + id + " does not exist");
         }
 
         brandRepo.deleteById(id);
+        log.info("Successfully deleted brand with id: {}", id);
     }
 }

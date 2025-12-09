@@ -4,7 +4,6 @@ import dev.ioannis.anemosparts.domain.ModelDto;
 import dev.ioannis.anemosparts.domain.requests.ModelSaveRequest;
 import dev.ioannis.anemosparts.entities.Brand;
 import dev.ioannis.anemosparts.entities.Model;
-import dev.ioannis.anemosparts.exceptions.NullBrandException;
 import dev.ioannis.anemosparts.mappers.ModelMapper;
 import dev.ioannis.anemosparts.repositories.BrandRepo;
 import dev.ioannis.anemosparts.repositories.ModelRepo;

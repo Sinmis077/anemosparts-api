@@ -5,7 +5,7 @@ import dev.ioannis.anemosparts.domain.PartSummaryDto;
 import dev.ioannis.anemosparts.domain.requests.PartSaveRequest;
 import dev.ioannis.anemosparts.entities.Model;
 import dev.ioannis.anemosparts.entities.Part;
-import dev.ioannis.anemosparts.mappers.*;
+import dev.ioannis.anemosparts.mappers.PartMapper;
 import dev.ioannis.anemosparts.repositories.ModelRepo;
 import dev.ioannis.anemosparts.repositories.OemRepo;
 import dev.ioannis.anemosparts.repositories.PartRepo;
@@ -61,45 +61,45 @@ class PartServiceImplTest {
     }
 
     @Test
-    void findAll_returnsEmptyList_whenNoPartsExist() {
+    void findAll_Summaries_returnsEmptyList_whenNoPartsExist() {
         when(partRepo.findAll()).thenReturn(List.of());
 
-        var result = partService.findAll();
+        var result = partService.findAllSummaries();
 
         assertTrue(result.parts().isEmpty());
         verify(partRepo).findAll();
     }
 
     @Test
-    void findAll_returnsParts_whenPartsExist() {
+    void findAll_Summaries_returnsParts_whenPartsExist() {
         PartSummaryDto dto = new PartSummaryDto();
         dto.setId(1L);
 
         when(partRepo.findAll()).thenReturn(List.of(part));
         when(partMapper.toSummaries(List.of(part))).thenReturn(List.of(dto));
 
-        var result = partService.findAll();
+        var result = partService.findAllSummaries();
 
         assertEquals(1, result.parts().size());
         verify(partRepo).findAll();
     }
 
     @Test
-    void findAllFull_returnsEmptyList_whenNoPartsExist() {
+    void findAllSummariesFull_returnsEmptyList_whenNoPartsExist() {
         when(partRepo.findAll()).thenReturn(List.of());
 
-        var result = partService.findAllFull();
+        var result = partService.findAll();
 
         assertTrue(result.parts().isEmpty());
         verify(partRepo).findAll();
     }
 
     @Test
-    void findAllFull_returnsParts_whenPartsExist() {
+    void findAllSummariesFull_returnsParts_whenPartsExist() {
         when(partRepo.findAll()).thenReturn(List.of(part));
         when(partMapper.toDtos(List.of(part))).thenReturn(List.of(partDto));
 
-        var result = partService.findAllFull();
+        var result = partService.findAll();
 
         assertEquals(1, result.parts().size());
         verify(partRepo).findAll();

@@ -1,6 +1,5 @@
 package dev.ioannis.anemosparts.controllers;
 
-import dev.ioannis.anemosparts.domain.BrandDto;
 import dev.ioannis.anemosparts.repositories.BrandRepo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

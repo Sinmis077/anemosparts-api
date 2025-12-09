@@ -23,5 +23,7 @@ public class PartSummaryDto {
     private Integer quantity;
     private Optional<String> thumbnailSrc;
 
+    private String brandIconSrc;
+
     private List<Long> modelIds;
 }

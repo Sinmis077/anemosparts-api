@@ -2,87 +2,89 @@ package dev.ioannis.anemosparts.config;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ValidationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.server.PayloadTooLargeException;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
-import javax.naming.ServiceUnavailableException;
-import java.io.IOException;
+import javax.naming.AuthenticationException;
+import java.nio.file.AccessDeniedException;
 
 @RestControllerAdvice
 public class ExceptionConfiguration {
-    @ExceptionHandler(HttpClientErrorException.BadRequest.class)
-    public ResponseEntity<ErrorResponse> handleIllegalArgumentException(HttpClientErrorException.BadRequest ex) {
-        return ResponseEntity.status(HttpStatus.FAILED_DEPENDENCY).body(new ErrorResponse(ex.getMessage()));
+    private static final Logger log = LoggerFactory.getLogger(ExceptionConfiguration.class);
+
+    public record ErrorResponse(String message) {}
+
+    // 400 - Bad Request - Failed validation
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ErrorResponse> illegalArgumentExceptionHandler(IllegalArgumentException e) {
+        log.warn("Bad request: {}", e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(e.getMessage()));
     }
 
-    @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleEntityNotFound(EntityNotFoundException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(new ErrorResponse(ex.getMessage()));
-    }
-
-    @ExceptionHandler(ServiceUnavailableException.class)
-    public ResponseEntity<ErrorResponse> handleServiceUnavailable(ServiceUnavailableException ex) {
-        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
-                .body(new ErrorResponse(ex.getMessage()));
-    }
-
-    @ExceptionHandler(PayloadTooLargeException.class)
-    public ResponseEntity<ErrorResponse> handlePayloadTooLarge(PayloadTooLargeException ex) {
-        return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE)
-                .body(new ErrorResponse(ex.getMessage()));
-    }
-
-    @ExceptionHandler(HttpClientErrorException.Conflict.class)
-    public ResponseEntity<ErrorResponse> handleHttpClientError(HttpClientErrorException.Conflict ex) {
-        return ResponseEntity.status(HttpStatus.CONFLICT)
-                .body(new ErrorResponse(ex.getMessage()));
-    }
-
-    @ExceptionHandler(HttpClientErrorException.NotAcceptable.class)
-    public ResponseEntity<ErrorResponse> handleHttpClientNotAcceptable(HttpClientErrorException.NotAcceptable ex) {
-        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
-                .body(new ErrorResponse(ex.getMessage()));
-    }
-
-    @ExceptionHandler(HttpClientErrorException.TooManyRequests.class)
-    public ResponseEntity<ErrorResponse> handleTooManyRequests(HttpClientErrorException.TooManyRequests ex) {
-        return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
-                .body(new ErrorResponse(ex.getMessage()));
-    }
-
-    @ExceptionHandler(IOException.class)
-    public ResponseEntity<ErrorResponse> handleIOException(IOException ex) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new ErrorResponse(ex.getMessage()));
-    }
-
-    @ExceptionHandler(ValidationException.class)
-    public ResponseEntity<ErrorResponse> handleValidationException(ValidationException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(new ErrorResponse(ex.getMessage()));
-    }
-
+    // 400 - Bad Request - Jakarta validation failed
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(new ErrorResponse(ex.getMessage()));
+    public ResponseEntity<ErrorResponse> methodArgumentNotValidExceptionHandler(MethodArgumentNotValidException e) {
+        String message = e.getBindingResult().getFieldErrors().stream()
+                .findFirst()
+                .map(ex -> ex.getField() + ": " + ex.getDefaultMessage())
+                .orElse("Validation failed");
+
+        log.warn("Validation failed: {}", message);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(message));
+    }
+
+    // 401 - Unauthorized - User is not logged in
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<ErrorResponse> authenticationExceptionHandler(AuthenticationException e) {
+        log.warn("Authentication failed: {}", e.getMessage());
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse(e.getMessage()));
+    }
+
+    // 403 - Forbidden - User is logged in but does not have the necessary permissions
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ErrorResponse> accessDeniedExceptionHandler(AccessDeniedException e) {
+        log.warn("Access denied: {}", e.getMessage());
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponse(e.getMessage()));
+    }
+
+    // 404 - Not found - Client request could not be fulfilled due to missing an entity in the database
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<ErrorResponse> entityNotFoundExceptionHandler(EntityNotFoundException e) {
+        log.warn("Entity not found: {}", e.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(e.getMessage()));
+    }
+
+    // 409 - Conflict - Violation of business or database rules
+    @ExceptionHandler({IllegalStateException.class, DataIntegrityViolationException.class})
+    public ResponseEntity<ErrorResponse> conflictExceptionHandler(Exception e) {
+        String message = e instanceof DataIntegrityViolationException
+                ? "Database rule violation"
+                : e.getMessage();
+
+        log.warn("Conflict: {}", message);
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(new ErrorResponse(message));
+    }
+
+    // 413 - Payload Too Large - Given content is too large (images)
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public ResponseEntity<ErrorResponse> maxUploadSizeExceptionHandler(MaxUploadSizeExceededException e) {
+        log.warn("Max file size exceeded: {}", e.getMessage());
+        return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE).body(new ErrorResponse(e.getMessage()));
     }
 
     // Last resort / general catch-all
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGeneralErrors(Exception ex) {
-        // BAD HABIT: Using System.err.println instead of proper logging (SLF4J/Log4j)
-        // Should use a logger to log errors with proper log levels and formatting
-        System.err.println("ERROR caused by: " + ex.getCause());
-        System.err.println(ex.getMessage());
+        log.error("Unexpected error: {}", ex.getMessage());
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new ErrorResponse(ex.getMessage()));
+                .body(new ErrorResponse("An unexpected error occurred"));
     }
 }
