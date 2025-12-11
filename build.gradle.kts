@@ -38,6 +38,7 @@ dependencies {
     implementation("commons-io:commons-io:2.20.0")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("me.paulschwarz:spring-dotenv:4.0.0")
+    implementation("com.stripe:stripe-java:31.0.0")
 
     // Annotation Processors
     annotationProcessor("org.projectlombok:lombok")

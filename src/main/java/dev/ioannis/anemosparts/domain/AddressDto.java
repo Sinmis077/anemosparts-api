@@ -1,7 +1,6 @@
 package dev.ioannis.anemosparts.domain;
 
 
-import dev.ioannis.anemosparts.daemons.AddressType;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

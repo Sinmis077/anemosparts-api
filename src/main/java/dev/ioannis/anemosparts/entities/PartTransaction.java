@@ -5,27 +5,25 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.ColumnDefault;
 
 @Entity
-@Table(name = "part_images")
-@NoArgsConstructor
+@Table(name = "partTransactions")
 @AllArgsConstructor
+@NoArgsConstructor
 @Data
 @Builder
-public class PartImage {
+public class PartTransaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String source;
-
-    @ColumnDefault("false")
-    @Builder.Default
-    private Boolean isThumbnail = false;
+    private Long quantity;
 
     @ManyToOne
-    @JoinColumn(name = "part_id", referencedColumnName = "id")
+    @JoinColumn(name = "partId", referencedColumnName = "id")
     private Part part;
+
+    @ManyToOne
+    @JoinColumn(name = "orderId", referencedColumnName = "id")
+    private Order order;
 }

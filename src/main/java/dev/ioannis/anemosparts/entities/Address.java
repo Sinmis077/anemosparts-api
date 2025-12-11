@@ -1,10 +1,12 @@
-package dev.ioannis.anemosparts.daemons;
+package dev.ioannis.anemosparts.entities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Entity
 @Table(name = "Address")
@@ -20,7 +22,8 @@ public class Address {
     @JoinColumn(name = "accountUuid", referencedColumnName = "uuid")
     private Account account;
 
-    private AddressType type;
+    @OneToMany(mappedBy = "shippingAddress")
+    private List<Order> orders;
 
     private String extras;
     private String houseNumber;

@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +27,7 @@ public class Part {
     @Column(length = 500, nullable = false)
     private String description;
     @ColumnDefault("10")
-    private Double price;
+    private BigDecimal price;
     @ManyToOne
     @JoinColumn(name = "oem_number", referencedColumnName = "id")
     private OemNumber oemNumber;
@@ -34,14 +35,27 @@ public class Part {
     private String partNumber;
     @ColumnDefault("1")
     @Column(nullable = false)
-    private Integer quantity;
+    private Long quantity;
 
     @OneToMany(fetch =FetchType.EAGER, orphanRemoval = true, mappedBy = "part")
     @Builder.Default
     private List<PartImage> images = new ArrayList<>();
 
     @ManyToMany
-    @JoinTable(name = "part_model", joinColumns = @JoinColumn(name = "partId"), inverseJoinColumns = {@JoinColumn(name = "modelId", referencedColumnName = "id"),})
+    @JoinTable(
+            name = "part_model",
+            joinColumns = @JoinColumn(name = "partId"),
+            inverseJoinColumns = {
+                    @JoinColumn(
+                            name = "modelId",
+                            referencedColumnName = "id"
+                    )
+                }
+            )
     @Builder.Default
     private List<Model> models =  new ArrayList<>();
+
+    @OneToMany(mappedBy = "partId")
+    @Builder.Default
+    private List<PartTransaction> transactions = new ArrayList<>();
 }

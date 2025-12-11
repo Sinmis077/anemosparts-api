@@ -1,9 +1,9 @@
-package dev.ioannis.anemosparts.daemons;
+package dev.ioannis.anemosparts.enums;
 
 public enum OrderStatus {
     PAID,
     PROCESSING,
     SHIPPED,
     DELIVERED,
-    CANCELLED
+    CANCELED,
 }

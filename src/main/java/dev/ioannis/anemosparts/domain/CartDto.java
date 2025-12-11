@@ -7,8 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 @Builder
 @Data
@@ -17,5 +17,6 @@ import java.util.Map;
 public class CartDto {
     @Size(min = 1)
     @NotEmpty
-    private Map<Long, Integer> items = new HashMap<>();
+    @Builder.Default
+    private List<PartTransactionDto> parts = new ArrayList<>();
 }

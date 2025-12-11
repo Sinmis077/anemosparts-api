@@ -1,4 +1,4 @@
-package dev.ioannis.anemosparts.daemons;
+package dev.ioannis.anemosparts.entities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -31,4 +31,7 @@ public class Account {
 
     @OneToMany(mappedBy = "account")
     private List<Address> addresses;
+
+    @OneToMany(mappedBy = "account")
+    private List<Order> orders;
 }

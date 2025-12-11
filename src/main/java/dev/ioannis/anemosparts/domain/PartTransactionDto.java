@@ -1,4 +1,4 @@
-package dev.ioannis.anemosparts.daemons;
+package dev.ioannis.anemosparts.domain;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -11,11 +11,11 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CartItem {
+public class PartTransactionDto {
     @NotNull
     @Positive
-    private long partId;
+    private Long partId;
     @NotNull
     @Positive
-    private int quantity;
+    private Long quantity;
 }
