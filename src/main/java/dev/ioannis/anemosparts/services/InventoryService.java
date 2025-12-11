@@ -8,7 +8,7 @@ public interface InventoryService {
     @Transactional(readOnly = true)
     Boolean canSell(CartDto cart);
 
-    Boolean canSell(Long itemId, Integer quantity) throws EntityNotFoundException;
+    Boolean canSell(Long itemId, Long quantity) throws EntityNotFoundException;
 
-    void sell(Long itemId, Integer quantity) throws EntityNotFoundException, IllegalArgumentException;
+    void sell(Long itemId, Long quantity) throws EntityNotFoundException, IllegalArgumentException;
 }

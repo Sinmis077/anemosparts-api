@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Range;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,9 +27,9 @@ public class PartSaveRequest {
     private String partNumber;
     @DecimalMin("0.25")
     @DecimalMax("1000")
-    private double price;
+    private BigDecimal price;
     @Range(min = 0, max = 100)
-    private int quantity = 0;
+    private Long quantity = 0L;
 
     @Size(min = 0, max = 10)
     private List<PartImageSaveRequest> images = new ArrayList<>();
