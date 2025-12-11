@@ -1,7 +1,14 @@
 package dev.ioannis.anemosparts.services;
 
-public interface InventoryService {
-    Boolean canSell(Long itemId, Integer quantity);
+import dev.ioannis.anemosparts.domain.CartDto;
+import jakarta.persistence.EntityNotFoundException;
+import org.springframework.transaction.annotation.Transactional;
 
-    void sell(Long itemId, Integer quantity);
+public interface InventoryService {
+    @Transactional(readOnly = true)
+    Boolean canSell(CartDto cart);
+
+    Boolean canSell(Long itemId, Integer quantity) throws EntityNotFoundException;
+
+    void sell(Long itemId, Integer quantity) throws EntityNotFoundException, IllegalArgumentException;
 }

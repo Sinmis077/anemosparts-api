@@ -1,6 +1,5 @@
-package dev.ioannis.anemosparts.entities;
+package dev.ioannis.anemosparts.daemons;
 
-import dev.ioannis.anemosparts.enums.AddressType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

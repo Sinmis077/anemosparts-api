@@ -1,4 +1,4 @@
-package dev.ioannis.anemosparts.entities;
+package dev.ioannis.anemosparts.daemons;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

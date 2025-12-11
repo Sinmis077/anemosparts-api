@@ -1,4 +1,4 @@
-package dev.ioannis.anemosparts.enums;
+package dev.ioannis.anemosparts.daemons;
 
 public enum AddressType {
     BILLING,
