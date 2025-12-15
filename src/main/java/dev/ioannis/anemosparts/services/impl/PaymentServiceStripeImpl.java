@@ -45,7 +45,7 @@ public class PaymentServiceStripeImpl implements PaymentService {
         List<PartTransaction> cart = buildPartTransactions(checkoutRequest.getCart());
 
         List<LineItem> lineItems = buildLineItems(cart);
-        lineItems.add(AddShippingRateLine());
+        lineItems.add(buildShippingRateItemLine());
 
         var metaData = buildMetadata(cart);
 
@@ -76,7 +76,8 @@ public class PaymentServiceStripeImpl implements PaymentService {
         return cart.getParts().stream().map((part) -> PartTransaction.builder()
                         .part(partRepo
                                 .findById(part.getPartId())
-                                .orElseThrow(() -> new EntityNotFoundException("Could not find part with id: " + part.getPartId())))
+                                .orElseThrow(() -> new EntityNotFoundException("Could not find part with id: " + part.getPartId()))
+                        )
                         .quantity(part.getQuantity())
                         .build()).toList();
     }
@@ -99,7 +100,7 @@ public class PaymentServiceStripeImpl implements PaymentService {
                 .build()).collect(Collectors.toList());
     }
 
-    private LineItem AddShippingRateLine() {
+    private LineItem buildShippingRateItemLine() {
         return LineItem.builder()
                 .setQuantity(1L)
                 .setPriceData(
