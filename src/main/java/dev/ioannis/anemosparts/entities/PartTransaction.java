@@ -1,5 +1,7 @@
 package dev.ioannis.anemosparts.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import dev.ioannis.anemosparts.enums.TransactionStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,11 +21,16 @@ public class PartTransaction {
 
     private Long quantity;
 
-    @ManyToOne
+    @Builder.Default
+    private TransactionStatus status = TransactionStatus.HOLD;
+
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "partId", referencedColumnName = "id")
+    @JsonIgnore
     private Part part;
 
     @ManyToOne
     @JoinColumn(name = "orderId", referencedColumnName = "id")
+    @JsonIgnore
     private Order order;
 }

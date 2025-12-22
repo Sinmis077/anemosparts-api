@@ -16,6 +16,7 @@ import java.util.List;
 @Builder
 public class Address {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
@@ -25,11 +26,22 @@ public class Address {
     @OneToMany(mappedBy = "shippingAddress")
     private List<Order> orders;
 
+    @Column(nullable = false)
+    private String forename;
+    @Column(nullable = false)
+    private String surname;
+
     private String extras;
+    @Column(nullable = false)
     private String houseNumber;
+    @Column(nullable = false)
     private String street;
+    @Column(nullable = false)
     private String city;
+    @Column(nullable = false)
     private String state;
+    @Column(nullable = false)
     private String postalCode;
+    @Column(nullable = false)
     private String country;
 }

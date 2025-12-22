@@ -1,6 +1,7 @@
 package dev.ioannis.anemosparts.domain;
 
 
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,6 +13,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AddressDto {
+    @NotBlank
+    private String forename;
+    @NotBlank
+    private String surname;
+
     private String extras;
     @NotEmpty
     private String houseNumber;

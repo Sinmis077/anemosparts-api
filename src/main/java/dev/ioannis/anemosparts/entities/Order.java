@@ -32,6 +32,6 @@ public class Order {
     @JoinColumn(name = "shippingAddressId", referencedColumnName = "id")
     private Address shippingAddress;
 
-    @OneToMany(mappedBy = "order")
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<PartTransaction> partTransactions;
 }

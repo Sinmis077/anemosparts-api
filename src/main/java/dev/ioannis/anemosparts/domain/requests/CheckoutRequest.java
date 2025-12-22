@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CheckoutRequest {
-    private String email;
+    private CheckoutAccount account;
     private AddressDto address;
     private CartDto cart;
 }

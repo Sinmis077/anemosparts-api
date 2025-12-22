@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PartRepo extends JpaRepository<Part, Long>, JpaSpecificationExecutor<Part> {
     @Query("SELECT p.quantity FROM Part p WHERE p.id = :id")
-    Long getQuantityById(Long id);
+    Long findQuantityById(Long id);
 
     @Modifying
     @Query("UPDATE Part p SET p.quantity = :quantity where p.id = :partId")

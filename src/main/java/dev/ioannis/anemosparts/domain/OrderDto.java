@@ -14,6 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 public class OrderDto {
     private Long id;
+    @Builder.Default
     private OrderStatus status = OrderStatus.PAID;
     private String customerEmail;
     private AddressDto address;

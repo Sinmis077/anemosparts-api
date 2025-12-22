@@ -9,21 +9,22 @@ import com.stripe.model.checkout.Session;
 import com.stripe.net.Webhook;
 import com.stripe.param.checkout.SessionCreateParams;
 import com.stripe.param.checkout.SessionCreateParams.LineItem;
-import dev.ioannis.anemosparts.domain.CartDto;
 import dev.ioannis.anemosparts.domain.requests.CheckoutRequest;
 import dev.ioannis.anemosparts.domain.responses.CheckoutResponse;
 import dev.ioannis.anemosparts.domain.responses.PaymentConfirmationResponse;
 import dev.ioannis.anemosparts.entities.PartTransaction;
 import dev.ioannis.anemosparts.enums.PaymentProvider;
-import dev.ioannis.anemosparts.repositories.PartRepo;
+import dev.ioannis.anemosparts.services.InventoryService;
+import dev.ioannis.anemosparts.services.OrderService;
 import dev.ioannis.anemosparts.services.PaymentService;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,17 +33,25 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Transactional
 public class PaymentServiceStripeImpl implements PaymentService {
-    private final PartRepo partRepo;
+    private final OrderService orderService;
+    private final InventoryService inventoryService;
 
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
+
+    @Value("${app.payment.stripe.webhook.secret}")
     private String webhookSecret;
 
+    @Value("${app.payment.shipping.rate:12}")
     private Long shippingRate;
+    @Value("${app.stripe.success.url}")
     private String successUrl;
+    @Value("${app.stripe.cancel.url}")
     private String cancelUrl;
 
     @Override
     public CheckoutResponse createCheckout(CheckoutRequest checkoutRequest) {
-        List<PartTransaction> cart = buildPartTransactions(checkoutRequest.getCart());
+        List<PartTransaction> cart = inventoryService.hold(checkoutRequest.getCart());
 
         List<LineItem> lineItems = buildLineItems(cart);
         lineItems.add(buildShippingRateItemLine());
@@ -52,11 +61,12 @@ public class PaymentServiceStripeImpl implements PaymentService {
         try {
             var sessionParams = SessionCreateParams.builder()
                     .setMode(SessionCreateParams.Mode.PAYMENT)
-                    .setCustomerEmail(checkoutRequest.getEmail())
+                    .setCustomerEmail(checkoutRequest.getAccount().getEmail())
                     .setSuccessUrl(successUrl)
                     .setCancelUrl(cancelUrl)
                     .addAllLineItem(lineItems)
-                    .putMetadata("cart_data", metaData)
+                    .putMetadata("checkout_data", buildMetadata(checkoutRequest))
+                    .putMetadata("part_transaction_data", metaData)
                     .setPaymentIntentData(
                             SessionCreateParams.PaymentIntentData.builder()
                                     .putMetadata("payment_intent_data", metaData)
@@ -70,16 +80,6 @@ public class PaymentServiceStripeImpl implements PaymentService {
         } catch (StripeException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    private List<PartTransaction> buildPartTransactions(CartDto cart) {
-        return cart.getParts().stream().map((part) -> PartTransaction.builder()
-                        .part(partRepo
-                                .findById(part.getPartId())
-                                .orElseThrow(() -> new EntityNotFoundException("Could not find part with id: " + part.getPartId()))
-                        )
-                        .quantity(part.getQuantity())
-                        .build()).toList();
     }
 
     private List<LineItem> buildLineItems(List<PartTransaction> cart) {
@@ -118,11 +118,11 @@ public class PaymentServiceStripeImpl implements PaymentService {
                 .build();
     }
 
-    private String buildMetadata(List<PartTransaction> part) {
+    private String buildMetadata(Object object) {
         try {
-            return new ObjectMapper().writeValueAsString(part);
+            return objectMapper.writeValueAsString(object);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException("Could not serialize part transactions: " + e.getMessage());
+            throw new RuntimeException("Could not serialize object: " + e.getMessage());
         }
     }
 
@@ -141,12 +141,24 @@ public class PaymentServiceStripeImpl implements PaymentService {
                 .getObject()
                 .orElseThrow(() -> new IllegalArgumentException("Failed to deserialize Stripe session"));
 
+        log.debug(session.getPaymentStatus());
         // Only process paid sessions
         if ("paid".equals(session.getPaymentStatus())) {
             String checkoutData = session.getMetadata().get("checkout_data");
             if (checkoutData == null) {
                 log.error("Missing checkout_data in session metadata: {}", session.getId());
                 throw new IllegalStateException("Missing checkout data in session");
+            }
+
+            try {
+                var checkoutRequest = objectMapper.readValue(checkoutData, CheckoutRequest.class);
+                var transactions = deserializeTransactions(session);
+
+                log.debug(transactions.toString(), checkoutRequest.toString(), session);
+
+                orderService.createOrder(checkoutRequest, transactions, session.getId());
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException("Could not deserialize checkout request: " + e.getMessage());
             }
 
             return new PaymentConfirmationResponse(
@@ -156,7 +168,31 @@ public class PaymentServiceStripeImpl implements PaymentService {
             );
         }
 
+        if("cancelled".equals(session.getPaymentStatus())) {
+            var transactions =  deserializeTransactions(session);
+
+            inventoryService.releaseHold(transactions);
+        }
+
         return null;
+    }
+
+    private List<PartTransaction> deserializeTransactions(Session session) {
+        String partTransactionData = session.getMetadata().get("part_transaction_data");
+
+        if (partTransactionData == null) {
+            log.error("Missing part_transaction_data in session metadata: {}", session.getId());
+            throw new IllegalStateException("Missing part_transaction_data in session");
+        }
+
+        try {
+            var partTransactions = objectMapper.readValue(partTransactionData, PartTransaction[].class);
+
+            return Arrays.stream(partTransactions).toList();
+        } catch (JsonProcessingException e)
+        {
+            throw new RuntimeException("Could not deserialize part_transactions: " + e.getMessage());
+        }
     }
 
     @Override

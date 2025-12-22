@@ -1,5 +1,6 @@
 package dev.ioannis.anemosparts.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -37,7 +38,7 @@ public class Part {
     @Column(nullable = false)
     private Long quantity;
 
-    @OneToMany(fetch =FetchType.EAGER, orphanRemoval = true, mappedBy = "part")
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "part")
     @Builder.Default
     private List<PartImage> images = new ArrayList<>();
 
@@ -55,7 +56,8 @@ public class Part {
     @Builder.Default
     private List<Model> models =  new ArrayList<>();
 
-    @OneToMany(mappedBy = "partId")
+    @OneToMany(mappedBy = "part")
     @Builder.Default
+    @JsonIgnore
     private List<PartTransaction> transactions = new ArrayList<>();
 }

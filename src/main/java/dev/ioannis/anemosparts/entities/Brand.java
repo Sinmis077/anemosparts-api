@@ -1,5 +1,6 @@
 package dev.ioannis.anemosparts.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,5 +26,6 @@ public class Brand {
     private String iconUrl;
 
     @OneToMany(mappedBy = "brand")
+    @JsonIgnore
     private List<Model> models;
 }
