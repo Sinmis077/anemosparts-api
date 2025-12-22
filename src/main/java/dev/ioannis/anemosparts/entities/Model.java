@@ -1,5 +1,6 @@
 package dev.ioannis.anemosparts.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -31,9 +32,11 @@ public class Model {
 
     @ManyToMany(mappedBy = "models")
     @Builder.Default
+    @JsonIgnore
     private List<Part> parts = new ArrayList<>();
 
     @ManyToMany(mappedBy = "models")
     @Builder.Default
+    @JsonIgnore
     private List<OemNumber> oemNumbers = new ArrayList<>();
 }

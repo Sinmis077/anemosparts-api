@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Builder
@@ -17,8 +18,8 @@ public class PartDto {
     private String description;
     private String oemNumber;
     private String partNumber;
-    private double price;
-    private int quantity;
+    private BigDecimal price;
+    private Long quantity;
 
     private List<ModelDto> models;
 

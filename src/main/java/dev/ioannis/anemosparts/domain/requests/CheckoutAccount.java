@@ -1,7 +1,7 @@
 package dev.ioannis.anemosparts.domain.requests;
 
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,8 +11,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class SellRequest {
-    @NotNull
-    @Positive
-    private int quantity = 1;
+public class CheckoutAccount {
+    @NotBlank
+    @Email
+    private String email;
 }

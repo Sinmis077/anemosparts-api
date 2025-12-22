@@ -1,5 +1,6 @@
 package dev.ioannis.anemosparts.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,9 +23,11 @@ public class PartImage {
     private String source;
 
     @ColumnDefault("false")
+    @Builder.Default
     private Boolean isThumbnail = false;
 
     @ManyToOne
     @JoinColumn(name = "part_id", referencedColumnName = "id")
+    @JsonIgnore
     private Part part;
 }

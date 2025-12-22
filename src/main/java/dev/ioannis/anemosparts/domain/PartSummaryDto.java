@@ -5,8 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
 
 
 @Builder
@@ -19,9 +19,9 @@ public class PartSummaryDto {
     private String description;
     private String oemNumber;
     private String partNumber;
-    private Double price;
-    private Integer quantity;
-    private Optional<String> thumbnailSrc;
+    private BigDecimal price;
+    private Long quantity;
+    private String thumbnailSrc;
 
     private String brandIconSrc;
 
