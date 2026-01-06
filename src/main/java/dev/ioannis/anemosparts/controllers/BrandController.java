@@ -9,7 +9,6 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -19,26 +18,28 @@ public class BrandController {
     private final BrandService brandService;
 
     @GetMapping
-    public ResponseEntity<BrandFindAllResponse> findAll() {
-        return ResponseEntity.ok(brandService.findAll());
+    @ResponseStatus(HttpStatus.OK)
+    public BrandFindAllResponse findAll() {
+        return brandService.findAll();
     }
 
     @PostMapping
-    public ResponseEntity<BrandDto> create(@RequestBody @Valid BrandSaveRequest request) {
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(brandService.save(request));
+    @ResponseStatus(HttpStatus.CREATED)
+    public BrandDto create(@RequestBody @Valid BrandSaveRequest request) {
+        return brandService.save(request);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<BrandDto> update(
+    @ResponseStatus(HttpStatus.OK)
+    public BrandDto update(
             @PathVariable @NotNull @Positive Long id,
             @RequestBody @Valid BrandSaveRequest request) {
-        return ResponseEntity.status(HttpStatus.OK).body(brandService.update(id, request));
+        return brandService.update(id, request);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable @NotNull @Positive Long id) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable @NotNull @Positive Long id) {
         brandService.delete(id);
-        return  ResponseEntity.noContent().build();
     }
 }

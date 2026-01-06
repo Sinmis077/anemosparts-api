@@ -1,6 +1,7 @@
 package dev.ioannis.anemosparts.repositories.impl;
 
 import dev.ioannis.anemosparts.repositories.ImageRepo;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
@@ -10,6 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
+@Slf4j
 @Repository
 public class ImageRepoLocalImpl implements ImageRepo {
 
@@ -26,10 +28,7 @@ public class ImageRepoLocalImpl implements ImageRepo {
             Files.createDirectories(uploadDir);
         }
         catch (IOException e){
-            // BAD HABIT: Using System.out.println instead of proper logging (SLF4J/Log4j)
-            // Should use a logger to log errors properly
-            System.out.println("Could not create directory: " + uploadDir);
-            System.out.println(e.getMessage());
+        log.error("Could not create directory: {} The following message was provided: {}", uploadDir,  e.getMessage());
         }
     }
 

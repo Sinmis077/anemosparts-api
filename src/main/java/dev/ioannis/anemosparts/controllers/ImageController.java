@@ -9,9 +9,9 @@ import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.multipart.MultipartFile;
@@ -29,8 +29,9 @@ public class ImageController {
     @Value("${app.image.max.size}")
     private Long maxSize;
 
-    @PostMapping()
-    public ResponseEntity<ImageResourceURLResponse> addImage(@Image @NotNull MultipartFile image) throws IOException {
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public ImageResourceURLResponse addImage(@Image @NotNull MultipartFile image) throws IOException {
         if(image.getSize() > maxSize) {
             throw new HttpClientErrorException(HttpStatus.BANDWIDTH_LIMIT_EXCEEDED);
         }
@@ -40,11 +41,12 @@ public class ImageController {
                                          image.getContentType(),
                                          image.getBytes());
 
-        return ResponseEntity.ok(new ImageResourceURLResponse(imageUrl));
+        return new ImageResourceURLResponse(imageUrl);
     }
 
     @PostMapping("/batch")
-    public ResponseEntity<ImageResourceURLSResponse> addImages(@Images @NotNull List<MultipartFile> images) throws IOException {
+    @ResponseStatus(HttpStatus.CREATED)
+    public ImageResourceURLSResponse addImages(@Images @NotNull List<MultipartFile> images) throws IOException {
         if(images.isEmpty()) throw new HttpClientErrorException(HttpStatus.NOT_ACCEPTABLE);
         if(images.size() > 10) throw new HttpClientErrorException(HttpStatus.BANDWIDTH_LIMIT_EXCEEDED);
 
@@ -62,6 +64,6 @@ public class ImageController {
             imageUrls.add(imageUrl);
         }
 
-        return ResponseEntity.ok(new ImageResourceURLSResponse(imageUrls));
+        return new ImageResourceURLSResponse(imageUrls);
     }
 }

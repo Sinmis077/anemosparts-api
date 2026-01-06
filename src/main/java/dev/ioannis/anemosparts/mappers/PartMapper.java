@@ -7,13 +7,10 @@ import dev.ioannis.anemosparts.entities.Model;
 import dev.ioannis.anemosparts.entities.OemNumber;
 import dev.ioannis.anemosparts.entities.Part;
 import dev.ioannis.anemosparts.entities.PartImage;
-import dev.ioannis.anemosparts.repositories.OemRepo;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
@@ -68,10 +65,6 @@ public class PartMapper {
         return  entities.stream().map(this::toDto).toList();
     }
 
-    public List<Part> toEntities(List<PartDto> dtos) {
-        return dtos.stream().map(this::toEntity).toList();
-    }
-
     public List<PartSummaryDto> toSummaries(List<Part> parts) {
         return parts.stream().map(part -> {
             String thumbnailSrc = part.getImages().stream()
@@ -88,7 +81,7 @@ public class PartMapper {
                     part.getPartNumber(),
                     part.getPrice(),
                     part.getQuantity(),
-                    Optional.ofNullable(thumbnailSrc),
+                    thumbnailSrc,
                     part.getModels().getFirst().getBrand().getIconUrl(),
                     part.getModels().stream().map(Model::getId).toList()
             );

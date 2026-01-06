@@ -1,18 +1,19 @@
 package dev.ioannis.anemosparts.config;
 
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.validation.ValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import javax.naming.AuthenticationException;
+import javax.security.auth.login.AccountNotFoundException;
 import java.nio.file.AccessDeniedException;
 
 @RestControllerAdvice
@@ -77,6 +78,20 @@ public class ExceptionConfiguration {
     public ResponseEntity<ErrorResponse> maxUploadSizeExceptionHandler(MaxUploadSizeExceededException e) {
         log.warn("Max file size exceeded: {}", e.getMessage());
         return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE).body(new ErrorResponse(e.getMessage()));
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ErrorResponse> handleBadCredentials(BadCredentialsException e) {
+        log.debug("Failed attempt to login because of incorrect credentials: {}", e.getMessage());
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(new ErrorResponse("Invalid credentials"));
+    }
+
+    @ExceptionHandler(AccountNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleAccountDoesntExist(AccountNotFoundException e) {
+        log.debug("Failed attempt to login because of a missing account: {}", e.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ErrorResponse(e.getMessage()));
     }
 
     // Last resort / general catch-all

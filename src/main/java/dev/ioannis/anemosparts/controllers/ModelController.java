@@ -9,7 +9,6 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -19,26 +18,28 @@ public class ModelController {
     private final ModelService modelService;
 
     @GetMapping
-    public ResponseEntity<ModelFindAllResponse> findAll() {
-        return ResponseEntity.ok(modelService.findAll());
+    @ResponseStatus(HttpStatus.OK)
+    public ModelFindAllResponse findAll() {
+        return modelService.findAll();
     }
 
     @PostMapping
-    public ResponseEntity<ModelDto> create(@RequestBody @Valid ModelSaveRequest request) {
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(modelService.save(request));
+    @ResponseStatus(HttpStatus.CREATED)
+    public ModelDto create(@RequestBody @Valid ModelSaveRequest request) {
+        return modelService.save(request);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ModelDto> update(
+    @ResponseStatus(HttpStatus.OK)
+    public ModelDto update(
             @PathVariable @NotNull @Positive Long id,
             @RequestBody @Valid ModelSaveRequest request) {
-        return ResponseEntity.status(HttpStatus.OK).body(modelService.update(id, request));
+        return modelService.update(id, request);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable @NotNull @Positive Long id) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable @NotNull @Positive Long id) {
         modelService.delete(id);
-        return  ResponseEntity.noContent().build();
     }
 }

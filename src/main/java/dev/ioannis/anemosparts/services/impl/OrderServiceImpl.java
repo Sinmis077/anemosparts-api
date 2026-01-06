@@ -89,7 +89,7 @@ public class OrderServiceImpl implements OrderService {
     private Account buildAccount(CheckoutAccount account) {
         return accountService.existsByEmail(account.getEmail())
                 ? accountService.findByEmail(account.getEmail()).orElseThrow(() -> new EntityNotFoundException("Couldn't find an account associated with this email"))
-                : accountService.createAccount(Account.builder()
+                : accountService.createGuestAccount(Account.builder()
                 .email(account.getEmail())
                 .build());
     }
