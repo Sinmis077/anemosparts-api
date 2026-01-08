@@ -60,6 +60,7 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+    // Relatively light CORS filter, ideally it would have far more controlled CORS
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         return request -> {

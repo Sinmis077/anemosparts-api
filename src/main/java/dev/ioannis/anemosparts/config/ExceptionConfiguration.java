@@ -90,8 +90,8 @@ public class ExceptionConfiguration {
     @ExceptionHandler(AccountNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleAccountDoesntExist(AccountNotFoundException e) {
         log.debug("Failed attempt to login because of a missing account: {}", e.getMessage());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(new ErrorResponse(e.getMessage()));
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(new ErrorResponse("Invalid credentials"));
     }
 
     // Last resort / general catch-all
