@@ -76,6 +76,7 @@ tasks {
 sonar {
     properties {
         property("sonar.projectKey", "Sinmis077_anemosparts-api_1b92c5a9-19ac-4bc8-abc4-67d7495c34ef")
+        property("sonar.host.url", "http://localhost:9000")
         property("sonar.projectName", "anemosparts-api")
     }
 }

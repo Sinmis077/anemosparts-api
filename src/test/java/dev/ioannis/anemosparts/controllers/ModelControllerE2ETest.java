@@ -1,6 +1,7 @@
 package dev.ioannis.anemosparts.controllers;
 
 import dev.ioannis.anemosparts.entities.Brand;
+import dev.ioannis.anemosparts.helpers.AuthTokenHelper;
 import dev.ioannis.anemosparts.repositories.BrandRepo;
 import dev.ioannis.anemosparts.repositories.ModelRepo;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,6 +32,8 @@ class ModelControllerE2ETest {
     private BrandRepo brandRepo;
 
     private Long brandId;
+    @Autowired
+    private AuthTokenHelper authTokenHelper;
 
     @BeforeEach
     void setUp() {
@@ -53,6 +56,7 @@ class ModelControllerE2ETest {
     @Test
     void findAll_returnsModels_whenModelsExist() throws Exception {
         mockMvc.perform(post("/api/models")
+                        .cookie(authTokenHelper.adminCookie())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"name\":\"ZX-10R\",\"productionYear\":2020,\"brandId\":" + brandId + "}"))
                 .andExpect(status().isCreated());
@@ -67,6 +71,7 @@ class ModelControllerE2ETest {
     @Test
     void create_returnsModel_whenValidRequest() throws Exception {
         mockMvc.perform(post("/api/models")
+                        .cookie(authTokenHelper.adminCookie())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"name\":\"ZX-10R\",\"productionYear\":2020,\"brandId\":" + brandId + "}"))
                 .andExpect(status().isCreated())
@@ -78,6 +83,7 @@ class ModelControllerE2ETest {
     @Test
     void create_returnsBadRequest_whenNameIsNull() throws Exception {
         mockMvc.perform(post("/api/models")
+                        .cookie(authTokenHelper.adminCookie())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"productionYear\":2020,\"brandId\":" + brandId + "}"))
                 .andExpect(status().isBadRequest());
@@ -86,6 +92,7 @@ class ModelControllerE2ETest {
     @Test
     void create_returnsBadRequest_whenProductionYearIsTooOld() throws Exception {
         mockMvc.perform(post("/api/models")
+                        .cookie(authTokenHelper.adminCookie())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"name\":\"ZX-10R\",\"productionYear\":1800,\"brandId\":" + brandId + "}"))
                 .andExpect(status().isBadRequest());
@@ -94,6 +101,7 @@ class ModelControllerE2ETest {
     @Test
     void create_returnsBadRequest_whenProductionYearIsTooNew() throws Exception {
         mockMvc.perform(post("/api/models")
+                        .cookie(authTokenHelper.adminCookie())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"name\":\"ZX-10R\",\"productionYear\":2030,\"brandId\":" + brandId + "}"))
                 .andExpect(status().isBadRequest());
@@ -102,6 +110,7 @@ class ModelControllerE2ETest {
     @Test
     void create_returnsNotFound_whenBrandDoesNotExist() throws Exception {
         mockMvc.perform(post("/api/models")
+                        .cookie(authTokenHelper.adminCookie())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"name\":\"ZX-10R\",\"productionYear\":2020,\"brandId\":999}"))
                 .andExpect(status().isNotFound());
@@ -110,6 +119,7 @@ class ModelControllerE2ETest {
     @Test
     void update_returnsUpdatedModel_whenModelExists() throws Exception {
         String createResponse = mockMvc.perform(post("/api/models")
+                        .cookie(authTokenHelper.adminCookie())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"name\":\"ZX-10R\",\"productionYear\":2020,\"brandId\":" + brandId + "}"))
                 .andExpect(status().isCreated())
@@ -120,6 +130,7 @@ class ModelControllerE2ETest {
         Long modelId = Long.parseLong(createResponse.split("\"id\":")[1].split(",")[0]);
 
         mockMvc.perform(put("/api/models/" + modelId)
+                        .cookie(authTokenHelper.adminCookie())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"name\":\"ZX-10RR\",\"productionYear\":2021,\"brandId\":" + brandId + "}"))
                 .andExpect(status().isOk())
@@ -131,6 +142,7 @@ class ModelControllerE2ETest {
     @Test
     void update_returnsNotFound_whenBrandDoesNotExist() throws Exception {
         String createResponse = mockMvc.perform(post("/api/models")
+                        .cookie(authTokenHelper.adminCookie())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"name\":\"ZX-10R\",\"productionYear\":2020,\"brandId\":" + brandId + "}"))
                 .andExpect(status().isCreated())
@@ -141,6 +153,7 @@ class ModelControllerE2ETest {
         Long modelId = Long.parseLong(createResponse.split("\"id\":")[1].split(",")[0]);
 
         mockMvc.perform(put("/api/models/" + modelId)
+                        .cookie(authTokenHelper.adminCookie())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"name\":\"ZX-10RR\",\"productionYear\":2021,\"brandId\":999}"))
                 .andExpect(status().isNotFound());
@@ -149,6 +162,7 @@ class ModelControllerE2ETest {
     @Test
     void delete_succeeds_whenModelExists() throws Exception {
         String createResponse = mockMvc.perform(post("/api/models")
+                        .cookie(authTokenHelper.adminCookie())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"name\":\"ZX-10R\",\"productionYear\":2020,\"brandId\":" + brandId + "}"))
                 .andExpect(status().isCreated())
@@ -158,8 +172,9 @@ class ModelControllerE2ETest {
 
         Long modelId = Long.parseLong(createResponse.split("\"id\":")[1].split(",")[0]);
 
-        mockMvc.perform(delete("/api/models/" + modelId))
-                .andExpect(status().isNoContent());
+        mockMvc.perform(delete("/api/models/" + modelId)
+                        .cookie(authTokenHelper.adminCookie())
+                ).andExpect(status().isNoContent());
 
         mockMvc.perform(get("/api/models"))
                 .andExpect(status().isOk())
@@ -168,7 +183,8 @@ class ModelControllerE2ETest {
 
     @Test
     void delete_returnsNotFound_whenModelDoesNotExist() throws Exception {
-        mockMvc.perform(delete("/api/models/999"))
-                .andExpect(status().isNotFound());
+        mockMvc.perform(delete("/api/models/999")
+                        .cookie(authTokenHelper.adminCookie())
+                ).andExpect(status().isNotFound());
     }
 }

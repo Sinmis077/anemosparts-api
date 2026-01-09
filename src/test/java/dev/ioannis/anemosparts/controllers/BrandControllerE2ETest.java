@@ -1,5 +1,6 @@
 package dev.ioannis.anemosparts.controllers;
 
+import dev.ioannis.anemosparts.helpers.AuthTokenHelper;
 import dev.ioannis.anemosparts.repositories.BrandRepo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,6 +25,8 @@ class BrandControllerE2ETest {
 
     @Autowired
     private BrandRepo brandRepo;
+    @Autowired
+    private AuthTokenHelper authTokenHelper;
 
     @BeforeEach
     void setUp() {
@@ -40,6 +43,7 @@ class BrandControllerE2ETest {
     @Test
     void findAll_returnsBrands_whenBrandsExist() throws Exception {
         mockMvc.perform(post("/api/brands")
+                        .cookie(authTokenHelper.adminCookie())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"name\":\"Kawasaki\",\"iconUrl\":\"http://example.com/kawasaki.png\"}"))
                 .andExpect(status().isCreated());
@@ -54,6 +58,7 @@ class BrandControllerE2ETest {
     @Test
     void create_returnsBrand_whenValidRequest() throws Exception {
         mockMvc.perform(post("/api/brands")
+                        .cookie(authTokenHelper.adminCookie())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"name\":\"Kawasaki\",\"iconUrl\":\"http://example.com/kawasaki.png\"}"))
                 .andExpect(status().isCreated())
@@ -64,8 +69,8 @@ class BrandControllerE2ETest {
 
     @Test
     void create_returnsError_whenNameIsNull() throws Exception {
-        // Note: Spring validation should return 400, but verify actual behavior
         mockMvc.perform(post("/api/brands")
+                        .cookie(authTokenHelper.adminCookie())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"iconUrl\":\"http://example.com/kawasaki.png\"}"))
                 .andExpect(status().isBadRequest());
@@ -74,6 +79,7 @@ class BrandControllerE2ETest {
     @Test
     void create_succeeds_whenIconUrlIsNull() throws Exception {
         mockMvc.perform(post("/api/brands")
+                        .cookie(authTokenHelper.adminCookie())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"name\":\"Kawasaki\"}"))
                 .andExpect(status().isCreated())
@@ -84,6 +90,7 @@ class BrandControllerE2ETest {
     @Test
     void update_returnsUpdatedBrand_whenBrandExists() throws Exception {
         String createResponse = mockMvc.perform(post("/api/brands")
+                        .cookie(authTokenHelper.adminCookie())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"name\":\"Kawasaki\",\"iconUrl\":\"http://example.com/old.png\"}"))
                 .andExpect(status().isCreated())
@@ -94,6 +101,7 @@ class BrandControllerE2ETest {
         Long brandId = Long.parseLong(createResponse.split("\"id\":")[1].split(",")[0]);
 
         mockMvc.perform(put("/api/brands/" + brandId)
+                        .cookie(authTokenHelper.adminCookie())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"name\":\"Kawasaki Racing\",\"iconUrl\":\"http://example.com/new.png\"}"))
                 .andExpect(status().isOk())
@@ -105,6 +113,7 @@ class BrandControllerE2ETest {
     @Test
     void delete_succeeds_whenBrandExists() throws Exception {
         String createResponse = mockMvc.perform(post("/api/brands")
+                        .cookie(authTokenHelper.adminCookie())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"name\":\"Kawasaki\"}"))
                 .andExpect(status().isCreated())
@@ -114,8 +123,9 @@ class BrandControllerE2ETest {
 
         Long brandId = Long.parseLong(createResponse.split("\"id\":")[1].split(",")[0]);
 
-        mockMvc.perform(delete("/api/brands/" + brandId))
-                .andExpect(status().isNoContent());
+        mockMvc.perform(delete("/api/brands/" + brandId)
+                .cookie(authTokenHelper.adminCookie())
+        ).andExpect(status().isNoContent());
 
         mockMvc.perform(get("/api/brands"))
                 .andExpect(status().isOk())
@@ -124,7 +134,8 @@ class BrandControllerE2ETest {
 
     @Test
     void delete_returnsInternalServerError_whenBrandDoesNotExist() throws Exception {
-        mockMvc.perform(delete("/api/brands/999"))
-                .andExpect(status().isNotFound());
+        mockMvc.perform(delete("/api/brands/999")
+                        .cookie(authTokenHelper.adminCookie())
+                ).andExpect(status().isNotFound());
     }
 }

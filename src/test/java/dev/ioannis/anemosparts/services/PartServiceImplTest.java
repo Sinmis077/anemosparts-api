@@ -85,7 +85,7 @@ class PartServiceImplTest {
     }
 
     @Test
-    void findAllSummariesFull_returnsEmptyList_whenNoPartsExist() {
+    void findAll_returnsEmptyList_whenNoPartsExist() {
         when(partRepo.findAll()).thenReturn(List.of());
 
         var result = partService.findAll();
@@ -95,7 +95,7 @@ class PartServiceImplTest {
     }
 
     @Test
-    void findAllSummariesFull_returnsParts_whenPartsExist() {
+    void findAll_returnsParts_whenPartsExist() {
         when(partRepo.findAll()).thenReturn(List.of(part));
         when(partMapper.toDtos(List.of(part))).thenReturn(List.of(partDto));
 

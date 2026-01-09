@@ -2,6 +2,7 @@ package dev.ioannis.anemosparts.controllers;
 
 import dev.ioannis.anemosparts.entities.Brand;
 import dev.ioannis.anemosparts.entities.Model;
+import dev.ioannis.anemosparts.helpers.AuthTokenHelper;
 import dev.ioannis.anemosparts.repositories.BrandRepo;
 import dev.ioannis.anemosparts.repositories.ModelRepo;
 import dev.ioannis.anemosparts.repositories.PartRepo;
@@ -36,6 +37,8 @@ class PartControllerE2ETest {
     private BrandRepo brandRepo;
 
     private Long modelId;
+    @Autowired
+    private AuthTokenHelper authTokenHelper;
 
     @BeforeEach
     void setUp() {
@@ -65,11 +68,12 @@ class PartControllerE2ETest {
     @Test
     void findAll_returnsParts_whenPartsExist() throws Exception {
         mockMvc.perform(post("/api/parts")
+                        .cookie(authTokenHelper.adminCookie())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"name\":\"Front Brake Pads\",\"description\":\"High performance brake pads for ZX-10R\",\"partNumber\":\"BP-ZX10R-F\",\"price\":75.50,\"quantity\":10,\"modelIds\":[" + modelId + "]}"))
                 .andExpect(status().isCreated());
 
-        mockMvc.perform(get("/api/parts"))
+        mockMvc.perform(get("/api/parts/full"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.parts", hasSize(1)))
                 .andExpect(jsonPath("$.parts[0].name", is("Front Brake Pads")))
@@ -86,6 +90,7 @@ class PartControllerE2ETest {
     @Test
     void findAllFull_returnsParts_whenPartsExist() throws Exception {
         mockMvc.perform(post("/api/parts")
+                        .cookie(authTokenHelper.adminCookie())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"name\":\"Front Brake Pads\",\"description\":\"High performance brake pads for ZX-10R\",\"partNumber\":\"BP-ZX10R-F\",\"price\":75.50,\"quantity\":10,\"modelIds\":[" + modelId + "]}"))
                 .andExpect(status().isCreated());
@@ -99,6 +104,7 @@ class PartControllerE2ETest {
     @Test
     void create_returnsPart_whenValidRequest() throws Exception {
         mockMvc.perform(post("/api/parts")
+                        .cookie(authTokenHelper.adminCookie())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"name\":\"Front Brake Pads\",\"description\":\"High performance brake pads for ZX-10R\",\"partNumber\":\"BP-ZX10R-F\",\"price\":75.50,\"quantity\":10,\"modelIds\":[" + modelId + "]}"))
                 .andExpect(status().isCreated())
@@ -113,6 +119,7 @@ class PartControllerE2ETest {
     @Test
     void create_returnsBadRequest_whenNameIsBlank() throws Exception {
         mockMvc.perform(post("/api/parts")
+                        .cookie(authTokenHelper.adminCookie())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"name\":\"\",\"description\":\"High performance brake pads\",\"partNumber\":\"BP-ZX10R-F\",\"price\":75.50,\"quantity\":10,\"modelIds\":[" + modelId + "]}"))
                 .andExpect(status().isBadRequest());
@@ -121,6 +128,7 @@ class PartControllerE2ETest {
     @Test
     void create_returnsBadRequest_whenDescriptionIsTooShort() throws Exception {
         mockMvc.perform(post("/api/parts")
+                        .cookie(authTokenHelper.adminCookie())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"name\":\"Brake Pads\",\"description\":\"Short\",\"partNumber\":\"BP-ZX10R-F\",\"price\":75.50,\"quantity\":10,\"modelIds\":[" + modelId + "]}"))
                 .andExpect(status().isBadRequest());
@@ -129,6 +137,7 @@ class PartControllerE2ETest {
     @Test
     void create_returnsBadRequest_whenPriceIsTooLow() throws Exception {
         mockMvc.perform(post("/api/parts")
+                        .cookie(authTokenHelper.adminCookie())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"name\":\"Brake Pads\",\"description\":\"High performance brake pads for ZX-10R\",\"partNumber\":\"BP-ZX10R-F\",\"price\":0.10,\"quantity\":10,\"modelIds\":[" + modelId + "]}"))
                 .andExpect(status().isBadRequest());
@@ -137,6 +146,7 @@ class PartControllerE2ETest {
     @Test
     void create_returnsBadRequest_whenModelIdsAreEmpty() throws Exception {
         mockMvc.perform(post("/api/parts")
+                        .cookie(authTokenHelper.adminCookie())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"name\":\"Brake Pads\",\"description\":\"High performance brake pads for ZX-10R\",\"partNumber\":\"BP-ZX10R-F\",\"price\":75.50,\"quantity\":10,\"modelIds\":[]}"))
                 .andExpect(status().isBadRequest());
@@ -145,6 +155,7 @@ class PartControllerE2ETest {
     @Test
     void create_succeeds_whenOptionalFieldsAreNull() throws Exception {
         mockMvc.perform(post("/api/parts")
+                        .cookie(authTokenHelper.adminCookie())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"name\":\"Brake Pads\",\"description\":\"High performance brake pads for ZX-10R\",\"partNumber\":\"BP-ZX10R-F\",\"price\":75.50,\"quantity\":10,\"modelIds\":[" + modelId + "]}"))
                 .andExpect(status().isCreated())
@@ -154,6 +165,7 @@ class PartControllerE2ETest {
     @Test
     void update_returnsUpdatedPart_whenPartExists() throws Exception {
         String createResponse = mockMvc.perform(post("/api/parts")
+                        .cookie(authTokenHelper.adminCookie())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"name\":\"Brake Pads\",\"description\":\"High performance brake pads for ZX-10R\",\"partNumber\":\"BP-ZX10R-F\",\"price\":75.50,\"quantity\":10,\"modelIds\":[" + modelId + "]}"))
                 .andExpect(status().isCreated())
@@ -164,6 +176,7 @@ class PartControllerE2ETest {
         Long partId = Long.parseLong(createResponse.split("\"id\":")[1].split(",")[0]);
 
         mockMvc.perform(put("/api/parts/" + partId)
+                        .cookie(authTokenHelper.adminCookie())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"name\":\"Premium Brake Pads\",\"description\":\"Ultra high performance racing brake pads designed specifically for Kawasaki ZX-10R motorcycles\",\"partNumber\":\"BP-ZX10R-F-PRO\",\"price\":125.00,\"quantity\":5,\"modelIds\":[" + modelId + "]}"))
                 .andExpect(status().isOk())
@@ -177,6 +190,7 @@ class PartControllerE2ETest {
     void delete_succeeds_whenPartExists() throws Exception {
         String createResponse = mockMvc.perform(post("/api/parts")
                         .contentType(MediaType.APPLICATION_JSON)
+                        .cookie(authTokenHelper.adminCookie())
                         .content("{\"name\":\"Brake Pads\",\"description\":\"High performance brake pads for ZX-10R\",\"partNumber\":\"BP-ZX10R-F\",\"price\":75.50,\"quantity\":10,\"modelIds\":[" + modelId + "]}"))
                 .andExpect(status().isCreated())
                 .andReturn()
@@ -185,8 +199,9 @@ class PartControllerE2ETest {
 
         Long partId = Long.parseLong(createResponse.split("\"id\":")[1].split(",")[0]);
 
-        mockMvc.perform(delete("/api/parts/" + partId))
-                .andExpect(status().isNoContent());
+        mockMvc.perform(delete("/api/parts/" + partId)
+                        .cookie(authTokenHelper.adminCookie())
+                ).andExpect(status().isNoContent());
 
         mockMvc.perform(get("/api/parts"))
                 .andExpect(status().isOk())
@@ -195,7 +210,8 @@ class PartControllerE2ETest {
 
     @Test
     void delete_returnsNotFound_whenPartDoesNotExist() throws Exception {
-        mockMvc.perform(delete("/api/parts/999"))
-                .andExpect(status().isNotFound());
+        mockMvc.perform(delete("/api/parts/999")
+                        .cookie(authTokenHelper.adminCookie())
+                ).andExpect(status().isNotFound());
     }
 }
