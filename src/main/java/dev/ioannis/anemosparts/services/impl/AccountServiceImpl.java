@@ -1,10 +1,13 @@
 package dev.ioannis.anemosparts.services.impl;
 
 import dev.ioannis.anemosparts.domain.requests.RegisterAccountRequest;
+import dev.ioannis.anemosparts.domain.requests.UpdateAccountRequest;
 import dev.ioannis.anemosparts.entities.Account;
 import dev.ioannis.anemosparts.enums.UserRole;
 import dev.ioannis.anemosparts.repositories.AccountRepo;
 import dev.ioannis.anemosparts.services.AccountService;
+import jakarta.persistence.EntityExistsException;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -28,6 +31,9 @@ public class AccountServiceImpl implements AccountService {
 
         if (dbAccount.isPresent()) {
             var account =  dbAccount.get();
+
+            if(!account.getPassword().isBlank()) throw new EntityExistsException("Account already exists");
+
             account.setForename(req.forename());
             account.setSurname(req.surname());
             account.setPassword(passwordEncoder.encode(req.password()));
@@ -56,6 +62,16 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public Account createGuestAccount(Account account) {
+        return accountRepo.save(account);
+    }
+
+    @Override
+    public Account updateAccount(String email, UpdateAccountRequest req) {
+        var account = accountRepo.findByEmail(email).orElseThrow(() -> new EntityNotFoundException("Account does not exist"));
+
+        account.setForename(req.forename());
+        account.setSurname(req.surname());
+
         return accountRepo.save(account);
     }
 

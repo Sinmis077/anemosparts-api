@@ -37,15 +37,17 @@ public class SecurityConfig {
                                 "/resources/images/**"
                         ).permitAll()
                         .requestMatchers("/api/checkout/**").permitAll()
-                        .requestMatchers("/api/auth/register/admin").hasRole("ADMIN")
                         .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/auth/register/admin").hasRole("ADMIN")
                         .requestMatchers("/v3/api-docs/**").permitAll()
 
+                        .requestMatchers(HttpMethod.GET, "/api/orders/**")
+                            .hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/api/parts/**", "/api/models/**", "/api/brands/**", "/api/images/**")
                             .hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/api/parts/**", "/api/models/**", "/api/brands/**")
+                        .requestMatchers(HttpMethod.PUT, "/api/parts/**", "/api/models/**", "/api/brands/**", "/api/orders/**")
                             .hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/api/parts/**", "/api/models/**", "/api/brands/**")
+                        .requestMatchers(HttpMethod.DELETE, "/api/parts/**", "/api/models/**", "/api/brands/**", "/api/orders/**")
                             .hasRole("ADMIN")
 
                         .anyRequest().authenticated()

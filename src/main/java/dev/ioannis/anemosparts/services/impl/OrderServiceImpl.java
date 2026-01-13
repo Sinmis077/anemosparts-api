@@ -6,10 +6,7 @@ import dev.ioannis.anemosparts.domain.requests.CheckoutAccount;
 import dev.ioannis.anemosparts.domain.requests.CheckoutRequest;
 import dev.ioannis.anemosparts.domain.requests.ShipOrderRequest;
 import dev.ioannis.anemosparts.domain.requests.UpdateOrderStatusRequest;
-import dev.ioannis.anemosparts.entities.Account;
-import dev.ioannis.anemosparts.entities.Address;
-import dev.ioannis.anemosparts.entities.Order;
-import dev.ioannis.anemosparts.entities.PartTransaction;
+import dev.ioannis.anemosparts.entities.*;
 import dev.ioannis.anemosparts.enums.OrderStatus;
 import dev.ioannis.anemosparts.mappers.OrderMapper;
 import dev.ioannis.anemosparts.repositories.OrderRepo;
@@ -23,6 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Slf4j
@@ -38,7 +36,12 @@ public class OrderServiceImpl implements OrderService {
     private final AddressService addressService;
 
     @Override
-    public Order createOrder(CheckoutRequest request, List<PartTransaction> partTransactions, String paymentReference) {
+    public List<OrderDto> getAll() {
+        return mapper.toDtos(orderRepo.findAll());
+    }
+
+    @Override
+    public Order createOrder(CheckoutRequest request, List<PartTransaction> partTransactions, String paymentReference, Long amount) {
         var order = new Order();
 
         var userAccount = buildAccount(request.getAccount());
@@ -50,6 +53,8 @@ public class OrderServiceImpl implements OrderService {
         order.setAccount(userAccount);
 
         order.setPaymentReference(paymentReference);
+
+        order.setTotal(BigDecimal.valueOf(amount));
 
         var savedOrder = orderRepo.save(order);
 
@@ -113,5 +118,14 @@ public class OrderServiceImpl implements OrderService {
         order.setOrderStatus(OrderStatus.SHIPPED);
         order.setTrackingCode(request.getTrackingCode());
         return mapper.toDto(orderRepo.save(order));
+    }
+
+    @Override
+    public void cancelOrder(Long orderId) {
+        var order = orderRepo.findById(orderId).orElseThrow(() -> new EntityNotFoundException("Could not find order"));
+
+        order.setOrderStatus(OrderStatus.CANCELED);
+
+        orderRepo.save(order);
     }
 }

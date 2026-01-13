@@ -1,5 +1,6 @@
 package dev.ioannis.anemosparts.mappers;
 
+import dev.ioannis.anemosparts.domain.ModelDto;
 import dev.ioannis.anemosparts.domain.PartDto;
 import dev.ioannis.anemosparts.domain.PartSummaryDto;
 import dev.ioannis.anemosparts.domain.requests.PartSaveRequest;
@@ -82,8 +83,11 @@ public class PartMapper {
                     part.getPrice(),
                     part.getQuantity(),
                     thumbnailSrc,
+
                     part.getModels().getFirst().getBrand().getIconUrl(),
-                    part.getModels().stream().map(Model::getId).toList()
+
+                    part.getModels().stream().map(modelMapper::toDto).toList(),
+                    part.getModels().stream().map(modelMapper::toDto).map(ModelDto::getBrand).toList()
             );
         }).toList();
     }

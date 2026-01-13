@@ -10,7 +10,9 @@ import dev.ioannis.anemosparts.entities.PartTransaction;
 import java.util.List;
 
 public interface OrderService {
-    Order createOrder(CheckoutRequest request, List<PartTransaction> partTransactions, String paymentReference);
+    Order createOrder(CheckoutRequest request, List<PartTransaction> partTransactions, String paymentReference, Long amount);
+
+    List<OrderDto> getAll();
 
     List<OrderDto> findOrdersByCustomerEmail(String email);
 
@@ -18,4 +20,5 @@ public interface OrderService {
 
     OrderDto addTrackingCode(ShipOrderRequest request);
 
+    void cancelOrder(Long orderId);
 }

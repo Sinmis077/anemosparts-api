@@ -3,8 +3,10 @@ package dev.ioannis.anemosparts.controllers;
 import dev.ioannis.anemosparts.domain.requests.LoginRequest;
 import dev.ioannis.anemosparts.domain.requests.RegisterAccountRequest;
 import dev.ioannis.anemosparts.domain.responses.TokenResponse;
+import dev.ioannis.anemosparts.domain.responses.UserDetails;
 import dev.ioannis.anemosparts.services.AccountService;
 import dev.ioannis.anemosparts.services.impl.UserAuthenticationService;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -12,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.security.auth.login.AccountNotFoundException;
@@ -26,6 +29,13 @@ public class AuthController {
     @Value("${app.security.jwt.expiry}")
     private String expiryTime;
 
+    @GetMapping("/me")
+    @ResponseStatus(HttpStatus.OK)
+    public UserDetails getMe(@AuthenticationPrincipal org.springframework.security.core.userdetails.UserDetails userDetails) {
+        var account = accountService.findByEmail(userDetails.getUsername()).orElseThrow(() -> new EntityNotFoundException("How did you get here?"));
+
+        return new UserDetails(account.getForename(), account.getSurname(), account.getEmail());
+    }
 
     @PostMapping("/test")
     @ResponseStatus(HttpStatus.CREATED)
@@ -50,7 +60,7 @@ public class AuthController {
             throws AccountNotFoundException, BadCredentialsException {
         var account = accountService.createAccount(req);
 
-        String token = userAuthenticationService.login(account.getEmail(), account.getPassword());
+        String token = userAuthenticationService.login(account.getEmail(), req.password());
         response.addCookie(createCookie(token));
 
         return new TokenResponse(token);

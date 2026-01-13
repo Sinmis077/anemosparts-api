@@ -156,7 +156,7 @@ public class PaymentServiceStripeImpl implements PaymentService {
 
                 log.debug(transactions.toString(), checkoutRequest.toString(), session);
 
-                orderService.createOrder(checkoutRequest, transactions, session.getId());
+                orderService.createOrder(checkoutRequest, transactions, session.getId(), (session.getAmountTotal()/100));
             } catch (JsonProcessingException e) {
                 throw new RuntimeException("Could not deserialize checkout request: " + e.getMessage());
             }

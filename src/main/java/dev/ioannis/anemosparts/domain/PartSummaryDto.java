@@ -25,5 +25,6 @@ public class PartSummaryDto {
 
     private String brandIconSrc;
 
-    private List<Long> modelIds;
+    private List<ModelDto> models;
+    private List<BrandDto> brands;
 }

@@ -1,6 +1,7 @@
 package dev.ioannis.anemosparts.services;
 
 import dev.ioannis.anemosparts.domain.requests.RegisterAccountRequest;
+import dev.ioannis.anemosparts.domain.requests.UpdateAccountRequest;
 import dev.ioannis.anemosparts.entities.Account;
 
 import java.util.Optional;
@@ -11,6 +12,8 @@ public interface AccountService {
     Account createAdminAccount(RegisterAccountRequest req);
 
     Account createGuestAccount(Account account);
+
+    Account updateAccount(String email, UpdateAccountRequest req);
 
     Optional<Account> findByEmail(String email);
 
