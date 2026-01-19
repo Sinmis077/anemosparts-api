@@ -108,6 +108,13 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderDto updateOrderStatus(UpdateOrderStatusRequest request) {
         var order = orderRepo.findById(request.getOrderId()).orElseThrow(() -> new EntityNotFoundException("Could not find order"));
+        if(order.getOrderStatus() != OrderStatus.PAID && request.getStatus() == OrderStatus.PAID) {
+            throw new IllegalStateException("Order cannot be marked as paid if it's been updated");
+        }
+        if(order.getOrderStatus() == request.getStatus()) {
+            throw new IllegalArgumentException("New status can't be the same as the old status");
+        }
+
         order.setOrderStatus(request.getStatus());
         return mapper.toDto(orderRepo.save(order));
     }
@@ -115,6 +122,10 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderDto addTrackingCode(ShipOrderRequest request) {
         var order = orderRepo.getReferenceById(request.getOrderId());
+        if(order.getOrderStatus() == OrderStatus.DELIVERED) {
+            throw new IllegalStateException("Order has already been delivered");
+        }
+
         order.setOrderStatus(OrderStatus.SHIPPED);
         order.setTrackingCode(request.getTrackingCode());
         return mapper.toDto(orderRepo.save(order));
@@ -123,6 +134,10 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void cancelOrder(Long orderId) {
         var order = orderRepo.findById(orderId).orElseThrow(() -> new EntityNotFoundException("Could not find order"));
+
+        if(order.getOrderStatus() == OrderStatus.DELIVERED ||  order.getOrderStatus() == OrderStatus.SHIPPED) {
+            throw new IllegalStateException("Order is already being or has been delivered");
+        }
 
         order.setOrderStatus(OrderStatus.CANCELED);
 
