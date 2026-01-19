@@ -22,12 +22,14 @@ public class AuthTokenHelper {
     }
 
     private Account generateAdmin() {
-        return accountService.createAdminAccount(
-                new RegisterAccountRequest(
-                        "Test",
-                        "Testington",
-                        "test@gmail.com",
-                        "12345678"
+        return accountService.findByEmail("test@gmail.com").orElse(
+                accountService.createAdminAccount(
+                        new RegisterAccountRequest(
+                                "Test",
+                                "Testington",
+                                "test@gmail.com",
+                                "12345678"
+                        )
                 )
         );
     }
