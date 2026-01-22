@@ -22,7 +22,7 @@ public class AuthTokenHelper {
     }
 
     private Account generateAdmin() {
-        return accountService.findByEmail("test@gmail.com").orElse(
+        return accountService.findByEmail("test@gmail.com").orElseGet(() ->
                 accountService.createAdminAccount(
                         new RegisterAccountRequest(
                                 "Test",

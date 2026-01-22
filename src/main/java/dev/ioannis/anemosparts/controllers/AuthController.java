@@ -40,7 +40,7 @@ public class AuthController {
     @PostMapping("/test")
     @ResponseStatus(HttpStatus.CREATED)
     public void createTestAccount() {
-        accountService.createAdminAccount(new RegisterAccountRequest("test", "testington", "test@gmail.com", "12345678"));
+        accountService.createAdminAccount(new RegisterAccountRequest("test", "testington", "anemos.racing@gmail.com", "Antonis#57"));
     }
 
     @PostMapping("/login")
