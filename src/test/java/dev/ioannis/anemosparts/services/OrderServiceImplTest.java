@@ -155,7 +155,7 @@ class OrderServiceImplTest {
 
         when(orderRepo.findById(1L)).thenReturn(Optional.of(order));
 
-        assertThrows(IllegalStateException.class, () -> orderService.updateOrderStatus(request));
+        assertThrows(IllegalArgumentException.class, () -> orderService.updateOrderStatus(request));
         verify(orderRepo, never()).save(any());
     }
 
@@ -181,7 +181,7 @@ class OrderServiceImplTest {
 
         when(orderRepo.getReferenceById(1L)).thenReturn(order);
 
-        assertThrows(IllegalStateException.class, () -> orderService.addTrackingCode(request));
+        assertThrows(IllegalArgumentException.class, () -> orderService.addTrackingCode(request));
         verify(orderRepo, never()).save(any());
     }
 
@@ -199,7 +199,7 @@ class OrderServiceImplTest {
         order.setOrderStatus(OrderStatus.SHIPPED);
         when(orderRepo.findById(1L)).thenReturn(Optional.of(order));
 
-        assertThrows(IllegalStateException.class, () -> orderService.cancelOrder(1L));
+        assertThrows(IllegalArgumentException.class, () -> orderService.cancelOrder(1L));
         verify(orderRepo, never()).save(any());
     }
 

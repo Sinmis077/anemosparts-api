@@ -21,6 +21,11 @@ public class AuthTokenHelper {
         return new Cookie("anemosparts-authorization", token);
     }
 
+    public Cookie customerCookie() {
+        String token = jwtService.generateToken(generateCustomer());
+        return new Cookie("anemosparts-authorization", token);
+    }
+
     private Account generateAdmin() {
         return accountService.findByEmail("test@gmail.com").orElseGet(() ->
                 accountService.createAdminAccount(
@@ -28,6 +33,19 @@ public class AuthTokenHelper {
                                 "Test",
                                 "Testington",
                                 "test@gmail.com",
+                                "12345678"
+                        )
+                )
+        );
+    }
+
+    public Account generateCustomer() {
+        return accountService.findByEmail("customer@test.com").orElseGet(() ->
+                accountService.createAccount(
+                        new RegisterAccountRequest(
+                                "Customer",
+                                "Custom",
+                                "customer@test.com",
                                 "12345678"
                         )
                 )

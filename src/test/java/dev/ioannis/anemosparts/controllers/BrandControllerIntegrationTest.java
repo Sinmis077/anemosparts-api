@@ -18,7 +18,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-class BrandControllerE2ETest {
+class BrandControllerIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;

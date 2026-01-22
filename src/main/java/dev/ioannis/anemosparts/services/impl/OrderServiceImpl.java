@@ -109,7 +109,7 @@ public class OrderServiceImpl implements OrderService {
     public OrderDto updateOrderStatus(UpdateOrderStatusRequest request) {
         var order = orderRepo.findById(request.getOrderId()).orElseThrow(() -> new EntityNotFoundException("Could not find order"));
         if(order.getOrderStatus() != OrderStatus.PAID && request.getStatus() == OrderStatus.PAID) {
-            throw new IllegalStateException("Order cannot be marked as paid if it's been updated");
+            throw new IllegalArgumentException("Order cannot be marked as paid if it's been updated");
         }
         if(order.getOrderStatus() == request.getStatus()) {
             throw new IllegalArgumentException("New status can't be the same as the old status");
@@ -123,7 +123,7 @@ public class OrderServiceImpl implements OrderService {
     public OrderDto addTrackingCode(ShipOrderRequest request) {
         var order = orderRepo.getReferenceById(request.getOrderId());
         if(order.getOrderStatus() == OrderStatus.DELIVERED) {
-            throw new IllegalStateException("Order has already been delivered");
+            throw new IllegalArgumentException("Order has already been delivered");
         }
 
         order.setOrderStatus(OrderStatus.SHIPPED);
@@ -136,10 +136,10 @@ public class OrderServiceImpl implements OrderService {
         var order = orderRepo.findById(orderId).orElseThrow(() -> new EntityNotFoundException("Could not find order"));
 
         if(order.getOrderStatus() == OrderStatus.DELIVERED ||  order.getOrderStatus() == OrderStatus.SHIPPED) {
-            throw new IllegalStateException("Order is already being or has been delivered");
+            throw new IllegalArgumentException("Order is already being or has been delivered");
         }
 
-        order.setOrderStatus(OrderStatus.CANCELED);
+        order.setOrderStatus(OrderStatus.CANCELLED);
 
         orderRepo.save(order);
     }

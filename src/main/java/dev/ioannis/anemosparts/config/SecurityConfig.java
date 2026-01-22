@@ -37,9 +37,8 @@ public class SecurityConfig {
                                 "/resources/images/**"
                         ).permitAll()
                         .requestMatchers("/api/checkout/**").permitAll()
-                        .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/auth/register/admin").hasRole("ADMIN")
-                        .requestMatchers("/v3/api-docs/**").permitAll()
+                        .requestMatchers("/api/auth/**").permitAll()
 
                         .requestMatchers(HttpMethod.GET, "/api/orders/**")
                             .hasRole("ADMIN")

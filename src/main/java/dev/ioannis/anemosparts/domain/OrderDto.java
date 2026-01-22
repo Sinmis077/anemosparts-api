@@ -18,6 +18,8 @@ public class OrderDto {
     private Long id;
     @Builder.Default
     private OrderStatus status = OrderStatus.PAID;
+    private String paymentReference;
+    private String trackingCode;
     private LocalDateTime orderDate;
     private LocalDateTime lastUpdate;
     private BigDecimal total;
